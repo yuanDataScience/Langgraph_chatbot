@@ -1,0 +1,11 @@
+.env
+logs
+*.log
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+**/*.env
+**/__pycache__/
+**/*.ipynb
+**/*.idea
