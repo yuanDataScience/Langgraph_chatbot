@@ -43,9 +43,5 @@ async def file_upload_controller(
 async def query_by_RAG_controller(generation: dict = Depends(get_generation)) -> RAGResponse:
     return RAGResponse(**generation)
 
-
-@app.post("/rephrase_question")
-async def rephrase_question_controller(rephrased_question: str = Depends(generate_rephrased_question)) -> str:
-    return rephrased_question
      
    
