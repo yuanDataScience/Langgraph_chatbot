@@ -1,6 +1,6 @@
 from fastapi import Body, HTTPException
-from .graph import graph_app, rephrase_question
-from .schemas import RAGRequest, RephraseRequest
+from graph import graph_app, rephrase_question
+from schemas import RAGRequest, RephraseRequest
 
 
 async def get_generation(body: RAGRequest=Body(...)) -> dict:

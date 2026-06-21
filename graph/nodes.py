@@ -1,13 +1,13 @@
 from typing import Dict, Any
-from .state import GraphState
-from .chains import (generate_answer, 
+from graph.state import GraphState
+from graph.chains import (generate_answer,
                      web_search,
                      filter_documents,
                      hallucination_grader,
                      answer_grader
                      )
 from .constants import MIN_DOCUMENTS
-from ..rag_process import vector_service
+from rag_process import vector_service
 
 
 async def retrieve(state: GraphState) -> Dict[str, Any]:

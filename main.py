@@ -7,10 +7,10 @@ from fastapi import (
     UploadFile, Depends
     )
 from typing import Annotated
-from .rag_process import pdf_text_extractor, vector_service
-from .upload import save_file
-from .schemas import RAGResponse
-from .dependencies import get_generation, generate_rephrased_question
+from rag_process import pdf_text_extractor, vector_service
+from upload import save_file
+from schemas import RAGResponse
+from dependencies import get_generation, generate_rephrased_question
 
 app = FastAPI()
 
@@ -29,10 +29,7 @@ async def file_upload_controller(
         bg_text_processor.add_task(pdf_text_extractor, filepath)
         bg_text_processor.add_task(
             vector_service.store_file_content_in_db,
-            filepath.replace("pdf", "txt"),
-            512,
-            "knowledgebase",
-            768,
+            filepath.replace("pdf", "txt")
         )
     except Exception as e:
         raise HTTPException(
@@ -44,7 +41,7 @@ async def file_upload_controller(
 
 @app.post("/generate_text", response_model=RAGResponse)
 async def query_by_RAG_controller(generation: dict = Depends(get_generation)) -> RAGResponse:
-    return generation
+    return RAGResponse(**generation)
 
 
 @app.post("/rephrase_question")

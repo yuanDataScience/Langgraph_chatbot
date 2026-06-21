@@ -10,6 +10,7 @@ langchain-core==1.0.4
 langchain-openai==1.0.2
 langchain-tavily==0.2.13
 langchain-text-splitters==1.0.0
+langchain_pinecone
 langgraph==1.0.2
 langgraph-sdk==0.2.9
 langsmith==0.4.41
@@ -20,9 +21,11 @@ mypy-extensions==1.0.0
 
 openai==2.7.1
 pandas==2.2.3
+pinecone
 pydantic==2.10.4
 pydantic-settings==2.7.1
 pydantic_core==2.27.2
+pypdf==5.1.0
 
 pytest==8.4.2
 pytest-asyncio==1.2.0
@@ -35,6 +38,7 @@ requests==2.32.3
 requests-toolbelt==1.0.0
 schema==0.7.7
 streamlit==1.41.1
+transformers==4.48.0
 tiktoken==0.8.0
 uvicorn==0.34.0
 

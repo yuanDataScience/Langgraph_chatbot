@@ -1,11 +1,11 @@
-from .chains import (answer_grader, 
+from graph.chains import (answer_grader,
                      generate_answer, 
                      retrieval_grader, 
                      hallucination_grader,
                      web_search, rephrase_question
                      )
-from .nodes import (retrieve,
+from graph.nodes import (retrieve,
                     search_web,
                     generate                    
                     )
-from .graph import graph_app
+from graph.graphs import graph_app

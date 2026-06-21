@@ -1,47 +1,80 @@
 import os
-
 from loguru import logger
 from langchain_core.documents import Document
-from .repository import VectorRepository
-from .transform import clean, embed, load
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_openai import OpenAIEmbeddings
+from langchain_pinecone import PineconeVectorStore
+import aiofiles
+
+from config import BaseConfig
+
+settings = BaseConfig()
+api_key = settings.OPENAI_API_KEY
+pinecone_key = settings.PINECONE_API_KEY
 
 
-class VectorService(VectorRepository):
-    def __init__(self):
-        super().__init__()
+class VectorService:
+    def __init__(self, index_name: str = "knowledgebase"):
+        self.index_name = index_name
 
-    async def store_file_content_in_db(
-        self,
-        filepath: str,
-        chunk_size: int = 512,
-        collection_name: str = "knowledgebase",
-        collection_size: int = 768,
-    ) -> None:
-        await self.create_collection(collection_name, collection_size)
-        logger.debug(f"Inserting {filepath} content into database")
-        async for chunk in load(filepath, chunk_size):
-            logger.debug(f"Inserting '{chunk[0:20]}...' into database")
+        # Embedding model
+        self.embeddings = OpenAIEmbeddings(model="text-embedding-3-small", api_key=api_key)
 
-            embedding_vector = embed(clean(chunk))
-            filename = os.path.basename(filepath)
-            await self.create(collection_name, embedding_vector, chunk, filename)
+        # Pinecone vectorstore wrapper
+        self.vectorstore = PineconeVectorStore(
+            index_name=index_name,
+            embedding=self.embeddings,
+            pinecone_api_key=pinecone_key,
+        )
 
-    
-    async def search_documents(self, query: str, collection_name: str="knowledgebase") -> list[Document]:
-        
-        documents = []
-        points = await self.search(collection_name, embed(query), 3, 0.7) 
+        # Retriever
+        self.retriever = self.vectorstore.as_retriever(
+            search_type="similarity",
+            search_kwargs={"k": 3}
+        )
 
-        
-        for point in points:
-            payload = point.payload or {}
-            content = payload.get("original_text", "")
-            metadata = {
-                "id": point.id,
-                "score": point.score,
-                **payload  # include all payload fields
-            }
-            documents.append(Document(page_content=content, metadata=metadata))
-        return documents  
+        # Text splitter (LangChain-native)
+        self.splitter = RecursiveCharacterTextSplitter(
+            chunk_size=512,
+            chunk_overlap=50,
+            separators=["\n\n", "\n", ".", " ", ""]
+        )
 
+    async def store_file_content_in_db(self, filepath: str) -> None:
+        """
+        Read the uploaded text file, split the file, embed chunks and save chunks to vector database
+        :param filepath: filepath to load to vectordb
+        :return: None
+        """
+        logger.debug(f"Loading file: {filepath}")
+
+        # Load entire file (safe for most RAG use cases)
+        async with aiofiles.open(filepath, "r", encoding="utf-8") as f:
+            raw_text = await f.read()
+
+        # Minimal cleaning (preserve structure)
+        raw_text = raw_text.replace("\r", "")
+
+        # Split into LangChain Documents
+        docs = self.splitter.create_documents(
+            [raw_text],
+            metadatas=[{"source": os.path.basename(filepath)}]
+        )
+
+        logger.debug(f"Storing {len(docs)} chunks into Pinecone")
+
+        # Ingest into Pinecone
+        PineconeVectorStore.from_documents(
+            documents=docs,
+            embedding=self.embeddings,
+            index_name=self.index_name,
+            pinecone_api_key=pinecone_key,
+        )
+
+    async def search_documents(self, query: str) -> list[Document]:
+        logger.debug(f"Searching for: {query}")
+        return self.retriever.invoke(query)
+
+
+# Singleton instance
 vector_service = VectorService()

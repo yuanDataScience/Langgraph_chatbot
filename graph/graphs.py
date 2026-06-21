@@ -6,10 +6,10 @@ load_dotenv()
 
 from langgraph.graph import END, StateGraph
 
-from .constants import RETRIEVE, GENERATE, WEB_SEARCH, MIN_DOCUMENTS
-from .nodes import generate, retrieve, search_web
-from .state import GraphState
-from .chains import answer_grader, hallucination_grader
+from graph.constants import RETRIEVE, GENERATE, WEB_SEARCH, MIN_DOCUMENTS
+from graph.nodes import generate, retrieve, search_web
+from graph.state import GraphState
+from graph.chains import answer_grader, hallucination_grader
 
 async def grade_generation(state: GraphState) -> str:
     print("---CHECK HALLUCINATIONS---")

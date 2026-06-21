@@ -1,5 +1,5 @@
 import pytest
-from .chains import answer_grader, generate_answer,rephrase_question
+from graph.chains import answer_grader, generate_answer,rephrase_question
 from loguru import logger
 
 @pytest.mark.asyncio
@@ -28,4 +28,5 @@ async def test_rephrased_question_yes() -> None:
     chat_history = [{"role": "user", "content": "what is prompt engineer ?"}, 
                     {"role": "assistant", "content": "Prompt engineering, also known as in-context prompting, involves methods to communicate with large language models (LLMs) to guide their behavior towards desired outcomes without altering the model's weights. It is an empirical science that requires experimentation and heuristics, as its effectiveness can vary across different models. The primary goal is to achieve alignment and steerability of the model."}]
     rephrased_question = await rephrase_question(question, chat_history)
+    print(f"rephrased_question:{rephrased_question}")
     assert rephrased_question.find("prompt engineering") > -1    

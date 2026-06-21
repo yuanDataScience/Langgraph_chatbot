@@ -1,5 +1,5 @@
 import pytest
-from .graph.graph import graph_app
+from .graph.graphs import graph_app
 from .graph.chains import answer_grader
 from loguru import logger
 import sys
