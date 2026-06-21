@@ -1,28 +1,31 @@
+from typing import Annotated
+
 from fastapi import (
     BackgroundTasks,
-    FastAPI, 
+    FastAPI,
     HTTPException,
-    status, 
-    File, 
+    status,
+    File,
     UploadFile, Depends
-    )
-from typing import Annotated
+)
+
+from dependencies import get_generation
 from rag_process import pdf_text_extractor, vector_service
-from upload import save_file
 from schemas import RAGResponse
-from dependencies import get_generation, generate_rephrased_question
+from upload import save_file
 
 app = FastAPI()
 
+
 @app.post("/upload")
 async def file_upload_controller(
-    file: Annotated[UploadFile, File(description="Uploaded PDF documents")],
-    bg_text_processor: BackgroundTasks,
+        file: Annotated[UploadFile, File(description="Uploaded PDF documents")],
+        bg_text_processor: BackgroundTasks,
 ):
     if file.content_type != "application/pdf":
         raise HTTPException(
             detail=f"Only uploading PDF documents are supported",
-             status_code=status.HTTP_400_BAD_REQUEST,
+            status_code=status.HTTP_400_BAD_REQUEST,
         )
     try:
         filepath = await save_file(file)
@@ -42,6 +45,3 @@ async def file_upload_controller(
 @app.post("/generate_text", response_model=RAGResponse)
 async def query_by_RAG_controller(generation: dict = Depends(get_generation)) -> RAGResponse:
     return RAGResponse(**generation)
-
-     
-   

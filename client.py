@@ -29,17 +29,7 @@ if prompt := st.chat_input("Write your prompt in this input field"):
     with st.chat_message("user"):
         st.text(prompt)
 
-    if not st.session_state.messages:
-        question = prompt
-    else:
-        rephased_question = requests.post(
-            "http://localhost:8000/rephrase_question",
-            json={
-                "question": prompt,
-                "chat_history": st.session_state.messages
-                }
-        )
-        question = rephased_question.json()        
+    question = prompt
 
     response = requests.post(
         f"http://localhost:8000/generate_text", 

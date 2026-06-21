@@ -1,4 +1,3 @@
-from dotenv import load_dotenv
 from langchain_core.documents import Document
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
@@ -17,34 +16,6 @@ TAVILY_API_KEY = settings.TAVILY_API_KEY
 web_search_tool = TavilySearch(max_results=3, tavily_api_key=TAVILY_API_KEY)
 
 
-class GradeAnswer(BaseModel):
-    """grade if the answer addresses the question """
-
-    binary_score: bool = Field(
-        description="answer addresses the question, yes or no"
-    )
-
-
-async def answer_grader(question: str, answer: str) -> GradeAnswer:
-    llm = ChatOpenAI(api_key=api_key, model="gpt-4o-mini", temperature=0)
-    structured_llm_grader = llm.with_structured_output(GradeAnswer)
-
-    system = """You are a grader assessing whether an LLM generation addresses/resolves a question \n
-    Give a binary score of 'yes' or 'no'. 'Yes' means that the LLM generation resolves the question
-    """
-
-    answer_prompt = ChatPromptTemplate.from_messages(
-        [
-            ("system", system),
-            ("human", "User question: \n\n {question} \n\n LLM generation: {answer}"),
-        ]
-    )
-
-    answer_grader: RunnableSequence = answer_prompt | structured_llm_grader
-    grade = await answer_grader.ainvoke({"question": question, "answer": answer})
-    return grade.binary_score
-
-
 async def generate_answer(context_doc: list[Document], question: str) -> str:
     llm = ChatOpenAI(api_key=api_key, model="gpt-4o-mini", temperature=0)
     hub_client = Client()
@@ -53,35 +24,6 @@ async def generate_answer(context_doc: list[Document], question: str) -> str:
     generation_chain = prompt | llm | StrOutputParser()
     generated_text = await generation_chain.ainvoke({"context": context_doc, "question": question})
     return generated_text
-
-
-class GradeHallucinations(BaseModel):
-    """Binary score for hallucination present in-generation answer."""
-
-    binary_score: bool = Field(
-        description="Answer is grounded in the facts, 'yes' or 'no'"
-    )
-
-
-async def hallucination_grader(context_docs: list[Document], generation: str) -> bool:
-    llm = ChatOpenAI(api_key=api_key, model="gpt-4o-mini", temperature=0)
-    structured_llm_grader = llm.with_structured_output(GradeHallucinations)
-
-    system = """You are a grader assessing whether an LLM generation is grounded in /
-    supported by a set of retrieved facts. \n
-        Give a binary score 'yes' or 'no'. 'Yes' means that the answer is grounded in 
-        / supported by the set of facts."""
-
-    hallucination_prompt = ChatPromptTemplate.from_messages(
-        [
-            ("system", system),
-            ("human", "Set of facts: \n\n {context_docs} \n\n LLM generation: {generation}"),
-        ]
-    )
-
-    hallucination_grader: RunnableSequence = hallucination_prompt | structured_llm_grader
-    grade = await hallucination_grader.ainvoke({"context_docs": context_docs, "generation": generation})
-    return grade.binary_score
 
 
 class GradeDocuments(BaseModel):
@@ -127,25 +69,6 @@ async def web_search(question: str) -> list[Document]:
     return documents
 
 
-async def rephrase_question(question: str, chat_history: list[dict[str, str]]) -> str:
-    chat_history_str = ""
-    for d in chat_history:
-        role = 'Human' if d["role"] == 'user' else 'AI'
-        chat_history_str += role + ":" + d["content"] + "\n"
-
-    # llm = ChatOpenAI(api_key=api_key, model="gpt-4o-mini", temperature=0)
-    llm = ChatOpenAI(api_key=api_key, model="gpt-4o", temperature=0)
-    hub_client = Client()
-    # prompt = hub_client.pull_prompt("langchain-ai/chat-langchain-rephrase")
-    prompt = hub_client.pull_prompt("joeywhelan/rephrase")
-    print(f"rephrase prompt: {prompt.input_variables}")
-    print(f"prompt.template:{prompt.template}")
-
-    rephrase_chain = prompt | llm | StrOutputParser()
-    rephrased_question = await rephrase_chain.ainvoke({"chat_history": chat_history_str, "input": question})
-    return rephrased_question
-
-
 async def filter_documents(documents: list[Document], question) -> list[Document]:
     filtered_docs = []
     for d in documents:
@@ -156,6 +79,8 @@ async def filter_documents(documents: list[Document], question) -> list[Document
     return filtered_docs
 
 
+async def generate_answer_pipeline(question: str) -> str:
+   pass
 if __name__ == "__main__":
     # print(os.getenv("OPENAI_API_KEY"))
 
@@ -165,8 +90,4 @@ if __name__ == "__main__":
     They can perceive, plan, act, and reflect — often used to model human-like 
     characters or assistants in simulations, games, or productivity tools."""
 
-    # grade = asyncio.run(grade_answer(question, answer))
-    # print(grade.binary_score)
 
-    # generated_text = asyncio.run(generate_answer(answer, question))
-    # print(generated_text)
