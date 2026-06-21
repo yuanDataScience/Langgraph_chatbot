@@ -9,3 +9,4 @@ logs
 **/__pycache__/
 **/*.ipynb
 **/*.idea
+**/uploads/
