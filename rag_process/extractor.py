@@ -1,5 +1,6 @@
 from pypdf import PdfReader
 
+
 # this is not an asynchronous function and can't run
 # in an asynchronous event loop since it will block the event loop!!
 def pdf_text_extractor(filepath: str) -> None:

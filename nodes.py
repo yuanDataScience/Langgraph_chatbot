@@ -1,5 +1,4 @@
 from typing import Dict, Any
-from langchain_core.documents import Document
 from chains import (generate_answer, filter_documents,
                     web_search,
                     )
