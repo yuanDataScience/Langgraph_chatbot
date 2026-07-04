@@ -6,7 +6,6 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class BaseConfig(BaseSettings):
     OPENAI_API_KEY: Optional[str]
     PINECONE_API_KEY: Optional[str]
-    TOKEN_SECRET: Optional[str]
     TAVILY_API_KEY: Optional[str]
        
 

@@ -1,5 +1,6 @@
 aiofiles==24.1.0
 annotated-types==0.7.0
+anyio
 fastapi==0.115.6
 fastapi-cli==0.0.7
 fastjsonschema==2.21.1
