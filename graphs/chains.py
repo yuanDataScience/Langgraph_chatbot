@@ -8,6 +8,7 @@ from langchain_openai import ChatOpenAI
 from langchain_tavily import TavilySearch
 from langsmith.client import Client
 from pydantic import BaseModel, Field
+from rag_process import vector_service
 
 from config import BaseConfig
 
@@ -18,13 +19,20 @@ TAVILY_API_KEY = settings.TAVILY_API_KEY
 web_search_tool = TavilySearch(max_results=3, tavily_api_key=TAVILY_API_KEY)
 
 
-async def generate_answer(context_doc: list[Document], question: str) -> str:
+async def retrieve_documents(question: str) -> list[str]:
+    retrieved_documents = await vector_service.search_documents(question)
+    documents = [d.page_content for d in retrieved_documents]
+
+    return documents
+
+async def generate_answer(context_doc: list[str], question: str) -> str:
     llm = ChatOpenAI(api_key=api_key, model="gpt-4o-mini", temperature=0)
     hub_client = Client()
     prompt = hub_client.pull_prompt("rlm/rag-prompt")
+    context_str = "\n".join([c for c in context_doc])
 
     generation_chain = prompt | llm | StrOutputParser()
-    generated_text = await generation_chain.ainvoke({"context": context_doc, "question": question})
+    generated_text = await generation_chain.ainvoke({"context": context_str, "question": question})
     return generated_text
 
 
@@ -36,7 +44,7 @@ class GradeDocuments(BaseModel):
     )
 
 
-async def retrieval_grader(document: Document, question: str):
+async def retrieval_grader(document: str, question: str):
     llm = ChatOpenAI(api_key=api_key, model="gpt-4o-mini", temperature=0)
     structured_llm_grader = llm.with_structured_output(GradeDocuments)
 
@@ -54,31 +62,21 @@ async def retrieval_grader(document: Document, question: str):
         ]
     )
 
-    retrieval_grader = grade_prompt | structured_llm_grader
-    grade = await retrieval_grader.ainvoke({"document": document, "question": question})
+    grader = grade_prompt | structured_llm_grader
+    grade = await grader.ainvoke({"document": document, "question": question})
 
-    return grade.binary_score
+    return grade
 
 
-async def web_search(question: str) -> list[Document]:
+async def web_search(question: str) -> list[str]:
     tavily_results = await web_search_tool.ainvoke({"query": question})
 
     documents = [
-        Document(page_content=result["content"], metadata={"source": result.get("url", "")})
-        for result in tavily_results["results"]
+        result["content"] for result in tavily_results["results"]
     ]
 
     return documents
 
-
-async def filter_documents(documents: list[Document], question) -> list[Document]:
-    filtered_docs = []
-    for d in documents:
-        score = await retrieval_grader(d, question)
-
-        if score:
-            filtered_docs.append(d)
-    return filtered_docs
 
 
 # define grader to check if the answer addressed the question
@@ -90,7 +88,7 @@ class GradeAnswer(BaseModel):
     )
 
 
-async def relevance_grader(question: str, answer: str):
+async def answer_grader(question: str, answer: str):
     llm = ChatOpenAI(api_key=api_key, model="gpt-4o-mini", temperature=0)
     structured_llm_grader = llm.with_structured_output(GradeAnswer)
 
@@ -106,7 +104,7 @@ async def relevance_grader(question: str, answer: str):
     )
 
     answer_grader = answer_prompt | structured_llm_grader
-    grade = await answer_grader.ainvoke({"question": question, "answer": answer})
+    grade = await answer_grader.ainvoke({"question": question, "generation": answer})
 
     return grade
 
@@ -135,6 +133,8 @@ async def hallucination_grader(documents: list[str], generation: str):
         Give a binary score 'yes' or 'no'. 'Yes' means that the answer is grounded in 
         / supported by the set of facts."""
 
+    doc_str = "\n".join([d for d in documents])
+
     hallucination_prompt = ChatPromptTemplate.from_messages(
         [
             ("system", system),
@@ -144,7 +144,7 @@ async def hallucination_grader(documents: list[str], generation: str):
 
     hallucination_grader: RunnableSequence = hallucination_prompt | structured_llm_grader
 
-    grade = await hallucination_grader.ainvoke({"documents": documents, "generation": generation})
+    grade = await hallucination_grader.ainvoke({"documents": doc_str, "generation": generation})
 
     return grade
 

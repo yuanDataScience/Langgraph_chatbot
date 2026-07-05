@@ -1,8 +1,8 @@
 import pytest
-from chains import (generate_answer, retrieval_grader, select_routes,
-                    hallucination_grader, relevance_grader
-                    )
-from rag_process import vector_service
+
+from graphs.chains import (generate_answer, retrieval_grader, select_routes,
+                           hallucination_grader, answer_grader, retrieve_documents
+                           )
 
 
 @pytest.mark.asyncio
@@ -20,7 +20,7 @@ async def test_generate_answer_yes() -> None:
 @pytest.mark.asyncio
 async def test_rag_retrieval_yes() -> None:
     prompt = "what is prompt engineer ?"
-    searched_documents = await vector_service.search_documents(prompt)
+    searched_documents = await retrieve_documents(prompt)
     searched_document = searched_documents[0]
     # logger.info(f"searched_content: {searched_document.page_content}")
     retrieval_grade = await retrieval_grader(searched_document, prompt)
@@ -30,26 +30,28 @@ async def test_rag_retrieval_yes() -> None:
 @pytest.mark.asyncio
 async def test_rag_retrieval_no() -> None:
     prompt = "what is prompt engineer ?"
-    searched_documents = await vector_service.search_documents(prompt)
+    searched_documents = await retrieve_documents(prompt)
     searched_document = searched_documents[0]
     # logger.info(f"searched_content: {searched_document.page_content}")
     retrieval_grade = await retrieval_grader(searched_document, "how to make pizza")
     assert not retrieval_grade
 
+
 @pytest.mark.asyncio
 async def test_hallucination_grader_answer_yes() -> None:
     question = "generative agents"
-    docs = await vector_service.search_documents(question)
+    docs = await retrieve_documents(question)
 
     answer = await generate_answer(docs, question)
     res = await hallucination_grader(docs, answer)
 
     assert res.binary_score
 
+
 @pytest.mark.asyncio
 async def test_hallucination_grader_answer_no() -> None:
     question = "generative agents"
-    docs = await vector_service.search_documents(question)
+    docs = await retrieve_documents(question)
 
     answer = "In order to make pizza we need to first start with the dough"
     res = await hallucination_grader(docs, answer)
@@ -71,3 +73,21 @@ async def test_router_to_websearch() -> None:
     res = await select_routes(question)
     assert res.datasource == "websearch"
 
+
+@pytest.mark.asyncio
+async def test_relevance_answer_yes() -> None:
+    question = "generative agents"
+    docs = await retrieve_documents(question)
+
+    answer = await generate_answer(docs, question)
+    res = await answer_grader(question, answer)
+
+    assert res.binary_score
+
+
+@pytest.mark.asyncio
+async def test_relevance_answer_no() -> None:
+    question = "generative agents"
+    answer = "In order to make pizza we need to first start with the dough"
+    res = await answer_grader(question, answer)
+    assert not res.binary_score

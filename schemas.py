@@ -16,9 +16,9 @@ SupportedTextModels: TypeAlias = Literal["gpt-3.5", "gpt-4o"]
 TokenCount = Annotated[int, Field(ge=0)]
 
 class RAGRequest(BaseModel):
-    prompt: str
+    question: str
     
 
 class RAGResponse(BaseModel):
     answer: str
-    num_original_documents: int
+    web_search: bool

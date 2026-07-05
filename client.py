@@ -31,7 +31,7 @@ if prompt := st.chat_input("Write your prompt in this input field"):
 
     response = requests.post(
         f"http://localhost:8000/generate_text",
-        json={"prompt": question}
+        json={"question": question}
     )
     response.raise_for_status()
 
