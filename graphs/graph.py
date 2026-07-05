@@ -53,7 +53,7 @@ app.get_graph().draw_mermaid_png(output_file_path="graphs.png")
 test_question = "what is prompt engineer ?"
 test_question_1 = "what is generative agents?"
 async def main():
-    result = await app.ainvoke({"question": test_question_1})
+    result = await app.ainvoke({"question": test_question})
     print(result)
 
 if __name__ == "__main__":

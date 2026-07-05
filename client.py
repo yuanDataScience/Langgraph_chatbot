@@ -36,7 +36,9 @@ if prompt := st.chat_input("Write your prompt in this input field"):
     response.raise_for_status()
 
     response_json = response.json()
-    answer = response_json["answer"]
+    web_search = response_json["web_search"]
+    source = "web search" if web_search else "RAG"
+    answer = response_json["answer"] + "\n Based on " + source
     st.session_state.messages.append({"role": "assistant", "content": answer})
 
     with st.chat_message("assistant"):

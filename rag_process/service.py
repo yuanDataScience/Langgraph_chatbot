@@ -10,8 +10,8 @@ from config import BaseConfig
 
 settings = BaseConfig()
 api_key = settings.OPENAI_API_KEY
+os.environ["PINECONE_API_KEY"] = settings.PINECONE_API_KEY
 pinecone_key = settings.PINECONE_API_KEY
-
 
 class VectorService:
     def __init__(self, index_name: str = "knowledgebase"):
@@ -24,7 +24,7 @@ class VectorService:
         self.vectorstore = PineconeVectorStore(
             index_name=index_name,
             embedding=self.embeddings,
-            pinecone_api_key=pinecone_key,
+            # pinecone_api_key=pinecone_key,
         )
 
         # Retriever
@@ -68,7 +68,7 @@ class VectorService:
             documents=docs,
             embedding=self.embeddings,
             index_name=self.index_name,
-            pinecone_api_key=pinecone_key,
+            # pinecone_api_key=pinecone_key,
         )
 
     async def search_documents(self, query: str) -> list[Document]:
