@@ -33,7 +33,7 @@ async def search_web(state: GraphState) -> dict[str, Any]:
 
     documents = state.get("documents", []) + web_docs
 
-    return {"documents": documents, "searched_web": True}
+    return {"documents": documents, "web_search": True}
 
 
 async def grade_documents(state: GraphState) -> dict[str, Any]:
