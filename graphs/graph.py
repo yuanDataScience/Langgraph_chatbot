@@ -1,60 +1,48 @@
-from langgraph.graph import END, StateGraph
-
-from graphs.consts import RETRIEVE, GRADE_DOCUMENTS, GENERATE, WEBSEARCH
-from graphs.nodes import (generate, retrieve, search_web, grade_documents, route_question,
-                          decide_to_generate, grade_generation,
-                          )
-from graphs.state import GraphState
 import asyncio
+
+from langchain_core.messages import HumanMessage
+from langgraph.graph import END, START, StateGraph
+from langgraph.prebuilt import tools_condition
+
+from graphs.consts import GENERATE, ACT, GRADE, ROUTE
+
+from graphs.nodes import generate_answer, tool_node, grade_answer, route_after_grading
+from graphs.state import GraphState
 
 workflow = StateGraph(GraphState)
 
-workflow.add_node(RETRIEVE, retrieve)
-workflow.add_node(GRADE_DOCUMENTS, grade_documents)
-workflow.add_node(GENERATE, generate)
-workflow.add_node(WEBSEARCH, search_web)
+workflow.add_node(GENERATE, generate_answer)
+workflow.add_node(ACT, tool_node)
+workflow.add_node(GRADE, grade_answer)
 
-workflow.set_conditional_entry_point(
-    route_question,
-    {
-        WEBSEARCH: WEBSEARCH,
-        RETRIEVE: RETRIEVE,
-    }
-)
 
-# workflow.set_entry_point(RETRIEVE)
-workflow.add_edge(RETRIEVE, GRADE_DOCUMENTS)
-workflow.add_conditional_edges(
-    GRADE_DOCUMENTS,
-    decide_to_generate,
-    {
-        WEBSEARCH: WEBSEARCH,
-        GENERATE: GENERATE,
-    },
-)
-
+workflow.add_edge(START, GENERATE)
 workflow.add_conditional_edges(
     GENERATE,
-    grade_generation,
-    {
-        "not supported": GENERATE,
-        "useful": END,
-        "not useful": WEBSEARCH,
-    }
+    tools_condition,
+    {"tools": ACT, END: GRADE}
 )
+workflow.add_edge(ACT, GENERATE)
 
-workflow.add_edge(WEBSEARCH, GENERATE)
-workflow.add_edge(GENERATE, END)
-
+workflow.add_conditional_edges(
+    GRADE,
+    route_after_grading,
+    {END: END, "generate": GENERATE }
+)
 app = workflow.compile()
 
-app.get_graph().draw_mermaid_png(output_file_path="graphs.png")
+question_1 = "what is prompt engineer ?"
+question_2 = "what is generative agents?"
+question_3 = "What is the temperature in Tokyo?"
+question_4 = "how to make a pizza?"
+question_5 = "what is the stock price of GOOGLE today?"
 
-test_question = "what is prompt engineer ?"
-test_question_1 = "what is generative agents?"
 async def main():
-    result = await app.ainvoke({"question": test_question})
-    print(result)
+    print("hello ReAct agent by Langraph")
+    message = HumanMessage(content=question_5)
+    res = await app.ainvoke({"messages": [message]})
+
 
 if __name__ == "__main__":
+    # app.get_graph().draw_mermaid_png(output_file_path="agent_workflow.png")
     asyncio.run(main())

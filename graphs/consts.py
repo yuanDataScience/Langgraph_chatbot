@@ -1,4 +1,4 @@
-RETRIEVE = "retrieve"
-GRADE_DOCUMENTS = "grade_documents"
+GRADE = "grade_answer"
 GENERATE = "generate"
-WEBSEARCH = "websearch"
+ROUTE = "route_after_grade"
+ACT = "act"

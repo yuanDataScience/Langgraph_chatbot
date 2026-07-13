@@ -16,9 +16,18 @@ TAVILY_API_KEY = settings.TAVILY_API_KEY
 
 tools = [TavilySearch(max_results=3, tavily_api_key=TAVILY_API_KEY), get_weather]
 
-SYSTEM_PROMPT = """
-You are a helpful assistant that can use tools to answer questions.
-"""
+SYSTEM_PROMPT = f"""You are an assistant for question-answering tasks with access to multiple tools.
+    use these tools to retrieve context to answer the question. If you don't know the answer,
+    just say that you don't know. Use three sentences maximum and keep the answer concise.
+
+    Tool Use Instructions:
+
+    - Use tools thoughtfully—only when they add value to the response
+    - Chain tools when needed (e.g., search for info, then use that to search
+      for relevant hotels)
+      - Be conversational and helpful
+    """
+
 system_message = SystemMessage(content=SYSTEM_PROMPT)
 
 llm = ChatOpenAI(api_key=api_key, model="gpt-4o-mini", temperature=0)

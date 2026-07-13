@@ -12,11 +12,12 @@ class GraphState(TypedDict):
     Attributes:
         question: question
         generation: LLM generation
-        web_search: whether to add search
+        acceptable: whether the answer is qualified to be acceptable
         messages: list of messages
     """
 
     question: str
     generation: str
-    web_search: bool
+    acceptable: bool
     messages: Annotated[list[AnyMessage], add_messages]
+    loop_count: int

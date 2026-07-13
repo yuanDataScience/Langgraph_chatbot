@@ -73,7 +73,8 @@ class VectorService:
 
     async def search_documents(self, query: str) -> list[Document]:
         logger.debug(f"Searching for: {query}")
-        return self.retriever.invoke(query)
+        rs = await self.retriever.ainvoke(query)
+        return rs
 
 
 # Singleton instance

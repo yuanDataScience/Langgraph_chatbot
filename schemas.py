@@ -21,4 +21,3 @@ class RAGRequest(BaseModel):
 
 class RAGResponse(BaseModel):
     answer: str
-    web_search: bool

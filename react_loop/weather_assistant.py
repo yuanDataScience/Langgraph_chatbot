@@ -21,10 +21,10 @@ class WeatherAssistant:
         self.messages = []
 
         # System prompt
-        self.system_prompt = f"""You are a helpful weather assistant that 
-        can search for weather information and help with trip planning. When users 
-        ask about weather, use the get_weather tool to get weather. For other questions,
-        use web_search. Be conversational and helpful in your responses."""
+        self.system_prompt = f"""You are a helpful assistant for question-answering tasks. 
+        When users ask about weather, use the get_weather tool to get weather. For other questions,
+        use web_search. If you don't know the answer, just say that you don't know.
+        Be conversational and helpful in your responses."""
 
         self.messages.append(SystemMessage(content=self.system_prompt))
 
@@ -46,10 +46,14 @@ class WeatherAssistant:
                 # Execute each tool call
 
             # process tool calls
-            for tool_call in response.tool_calls:
-                tool = self.tools[tool_call["name"]]
-                tool_result = await tool.ainvoke(tool_call)
-                self.messages.append(tool_result)
+            # for tool_call in response.tool_calls:
+            #     tool = self.tools[tool_call["name"]]
+            #     tool_result = await tool.ainvoke(tool_call)
+            #     self.messages.append(tool_result)
+
+            # process tool calls asynchronously
+            results = await asyncio.gather(*[self.tools[tc["name"]].ainvoke(tc) for tc in response.tool_calls])
+            self.messages.extend(results)
 
 
 async def main():
