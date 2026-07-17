@@ -18,9 +18,11 @@ class WeatherAssistant:
         # initialize llm
         self.llm = ChatOpenAI(api_key=api_key, model="gpt-4o-mini", temperature=0)
 
-        # bind LangChain tools to llm
+        # create tool dictionary and assign a name to each function
         self.tools = {"get_weather": get_weather,
                       "web_search": TavilySearch(max_results=3, tavily_api_key=TAVILY_API_KEY)}
+
+        # bind LangChain tools to llm
         self.llm_with_tools = self.llm.bind_tools(list(self.tools.values()))
 
         # initialize messages to store message list
@@ -32,21 +34,25 @@ class WeatherAssistant:
         use web_search. If you don't know the answer, just say that you don't know.
         Be conversational and helpful in your responses."""
 
+        # append SystemMessage to message list
         self.messages.append(SystemMessage(content=self.system_prompt))
 
     async def chat(self, message: str):
-        # Add user message
+        # Wrap User message in a HumanMessage and add it to message list
         self.messages.append(HumanMessage(content=message))
 
-        # Get AI response with potential tool calls
+        # Get AI response (it may or may not contain tool calls)
         response = await self.llm_with_tools.ainvoke(self.messages)
         self.messages.append(response)
 
-        # Check if there is any tools to call
+        # If there is any tool calls in the AI response
         if response.tool_calls:
 
             # process tool calls
             for tool_call in response.tool_calls:
+
+                # retrieve name of the function and invoke it,
+                # append resulting tool message to message list
                 tool = self.tools[tool_call["name"]]
                 tool_result = await tool.ainvoke(tool_call)
                 self.messages.append(tool_result)
