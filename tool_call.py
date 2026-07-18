@@ -20,7 +20,7 @@ class WeatherAssistant:
 
         # create tool dictionary and assign a name to each function
         self.tools = {"get_weather": get_weather,
-                      "web_search": TavilySearch(max_results=3, tavily_api_key=TAVILY_API_KEY)}
+                      "tavily_search": TavilySearch(max_results=3, tavily_api_key=TAVILY_API_KEY)}
 
         # bind LangChain tools to llm
         self.llm_with_tools = self.llm.bind_tools(list(self.tools.values()))
