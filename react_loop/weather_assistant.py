@@ -10,13 +10,14 @@ from tools.weather import get_weather
 settings = BaseConfig()
 api_key = settings.OPENAI_API_KEY
 TAVILY_API_KEY = settings.TAVILY_API_KEY
+print(TAVILY_API_KEY)
 
 
 class WeatherAssistant:
     def __init__(self):
         self.llm = ChatOpenAI(api_key=api_key, model="gpt-4o-mini", temperature=0)
         self.tools = {"get_weather": get_weather,
-                      "web_search": TavilySearch(max_results=3, tavily_api_key=TAVILY_API_KEY)}
+                      "tavily_search": TavilySearch(max_results=3, tavily_api_key=TAVILY_API_KEY)}
         self.llm_with_tools = self.llm.bind_tools(list(self.tools.values()))
         self.messages = []
 
@@ -45,12 +46,6 @@ class WeatherAssistant:
                 break
                 # Execute each tool call
 
-            # process tool calls
-            # for tool_call in response.tool_calls:
-            #     tool = self.tools[tool_call["name"]]
-            #     tool_result = await tool.ainvoke(tool_call)
-            #     self.messages.append(tool_result)
-
             # process tool calls asynchronously
             results = await asyncio.gather(*[self.tools[tc["name"]].ainvoke(tc) for tc in response.tool_calls])
             self.messages.extend(results)
@@ -59,8 +54,9 @@ class WeatherAssistant:
 async def main():
     print("hello Vanilla ReAct Loop")
     assistant = WeatherAssistant()
+    test_question = "What is the temperature in Tokyo?"
 
-    message = "What is the temperature in Tokyo?"
+    message = "tell me the first hostel in Tokyo your find if its temperature is lower than 30 degree."
     await assistant.chat(message)
 
     for msg in assistant.messages:

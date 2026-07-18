@@ -20,7 +20,7 @@ class WeatherAssistant:
 
         # bind LangChain tools to llm
         self.tools = {"get_weather": get_weather,
-                      "web_search": TavilySearch(max_results=3, tavily_api_key=TAVILY_API_KEY)}
+                      "tavily_search": TavilySearch(max_results=3, tavily_api_key=TAVILY_API_KEY)}
         self.llm_with_tools = self.llm.bind_tools(list(self.tools.values()))
 
         # initialize messages to store message list
