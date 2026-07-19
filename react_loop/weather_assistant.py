@@ -10,7 +10,6 @@ from tools.weather import get_weather
 settings = BaseConfig()
 api_key = settings.OPENAI_API_KEY
 TAVILY_API_KEY = settings.TAVILY_API_KEY
-print(TAVILY_API_KEY)
 
 
 class WeatherAssistant:
@@ -56,7 +55,7 @@ async def main():
     assistant = WeatherAssistant()
     test_question = "What is the temperature in Tokyo?"
 
-    message = "tell me the first hostel in Tokyo your find if its temperature is lower than 30 degree."
+    message = "tell me the first hotel you find in Boston if its temperature is lower than 30 degree."
     await assistant.chat(message)
 
     for msg in assistant.messages:

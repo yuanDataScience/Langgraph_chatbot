@@ -6,7 +6,7 @@ from langgraph.prebuilt import tools_condition
 
 from consts import AGENT_REASON, ACT
 from nodes import (run_agent_reasoning, tool_node,
-                          )
+                   )
 from state import ReactState
 
 workflow = StateGraph(ReactState)
@@ -23,10 +23,6 @@ workflow.add_conditional_edges(
     tools_condition,
     {"tools": ACT, END: END}
 )
-
-# workflow.set_entry_point(RETRIEVE)
-# workflow.add_edge(RETRIEVE, GRADE_DOCUMENTS)
-
 
 react_agent = workflow.compile()
 
