@@ -28,16 +28,14 @@ react_agent = workflow.compile()
 
 react_agent.get_graph().draw_mermaid_png(output_file_path="graphs.png")
 
-question_1 = "what is prompt engineer ?"
-question_2 = "what is generative agents?"
-question_3 = "What is the temperature in Tokyo?"
-question_4 = "how to make a pizza?"
-question_5 = "what is the stock price of GOOGLE today?"
+question = """
+           tell me the first hotel you find in Boston if 
+            its temperature is lower than 30 degree."""
 
 
 async def main():
     print("hello ReAct agent by Langraph")
-    message = HumanMessage(content=question_4)
+    message = HumanMessage(content=question)
     res = await react_agent.ainvoke({"messages": [message]})
 
 
