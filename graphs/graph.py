@@ -39,7 +39,7 @@ question_5 = "what is the stock price of GOOGLE today?"
 
 async def main():
     print("hello ReAct agent by Langraph")
-    message = HumanMessage(content=question_5)
+    message = HumanMessage(content=question_1)
     res = await app.ainvoke({"messages": [message]})
 
 

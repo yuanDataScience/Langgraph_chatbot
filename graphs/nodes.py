@@ -48,8 +48,8 @@ GRADER_SYSTEM_PROMPT = """""You are a grader assessing whether an LLM generation
       INSTRUCTIONS:
       (a) Evaluate if the context is relevant to the question
       Provide recommendation if context is not relevant to the question. You can suggest the LLM to use an 
-      appropriate tool. If there is no context, use your judgement if the question can be answered using
-      LLM's internal knowledge. You must be completely certain of the facts. If there is any ambiguity, 
+      appropriate tool. If there is no context, you must be completely certain of the facts. If the question is
+      covered by provided tools, or there is any ambiguity, 
       or if the question requires up-to-date or highly specific details, you MUST suggest to use a tool to verify answer.
 
       (b) Evaluate if the answer is based on the context
