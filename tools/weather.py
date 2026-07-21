@@ -15,38 +15,48 @@ async def get_weather(city: str, date: str = None) -> str:
     Returns:
         Weather information including temperature and conditions
     """
+    geocoding_url = "https://geocoding-api.open-meteo.com/v1/search"
+    weather_url = f"https://api.open-meteo.com/v1/forecast"
+
     try:
         # Use Open-Meteo free weather API (no key required)
         # First get coordinates for the city
-        geocoding_url = (
-            f"https://geocoding-api.open-meteo.com/v1/search?name={city}&count=1"
-        )
-        async with httpx.AsyncClient() as client:
-            geo_response = await client.get(geocoding_url)
-
-        geo_response.raise_for_status()
-
-        geo_data = geo_response.json()
-        if not geo_data.get("results"):
-            return f"Error: City '{city}' not found"
-
-        # Get weather data
-        lat = geo_data["results"][0]["latitude"]
-        lon = geo_data["results"][0]["longitude"]
-
-        weather_url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&current_weather=true&daily=temperature_2m_max,temperature_2m_min,precipitation_sum&timezone=auto"
-
-        if date:
-            weather_url += f"&start_date={date}&end_date={date}"
 
         async with httpx.AsyncClient() as client:
-            weather_response = await client.get(weather_url)
+            geo_response = await client.get(
+                geocoding_url,
+                params={"name": city, "count": 1}
+            )
 
-        weather_response.raise_for_status()
+            geo_response.raise_for_status()
 
-        data = weather_response.json()
-        current = data.get("current_weather", {})
-        daily = data.get("daily", {})
+            geo_data = geo_response.json()
+            if not geo_data.get("results"):
+                return f"Error: City '{city}' not found"
+
+            # Get weather data
+            lat = geo_data["results"][0]["latitude"]
+            lon = geo_data["results"][0]["longitude"]
+            weather_dict = {
+                "latitude": lat, "longitude": lon,
+                "current_weather": "true",
+                "daily": "temperature_2m_max,temperature_2m_min,precipitation_sum",
+                "timezone": "auto"
+            }
+
+            if date:
+                weather_dict["start_date"] = date
+                weather_dict["end_date"] = date
+
+            weather_response = await client.get(weather_url,
+                                                params=weather_dict
+                                                )
+
+            weather_response.raise_for_status()
+
+            data = weather_response.json()
+            current = data.get("current_weather", {})
+            daily = data.get("daily", {})
 
         result = f"Weather in {city}"
         if date and daily.get("time"):
