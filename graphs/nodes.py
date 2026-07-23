@@ -1,10 +1,9 @@
 from langchain_core.messages import SystemMessage, ToolMessage, HumanMessage
 from langchain_openai import ChatOpenAI
 from langchain_tavily import TavilySearch
+from langgraph.graph import END
 from langgraph.prebuilt import ToolNode
 from pydantic import BaseModel, Field
-from langgraph.graph import END
-from langchain_community.tools import DuckDuckGoSearchResults
 
 from config import BaseConfig
 from graphs.state import GraphState
@@ -109,8 +108,7 @@ async def generate_answer(state: GraphState) -> dict:
 
     return {
         "messages": [response],
-        "generation": response.content,
-        "loop_count": current_loops + 1
+        "generation": response.content
     }
 
 
@@ -139,6 +137,7 @@ async def grade_answer(state: GraphState):
 
     messages = state["messages"]
     answer = state["generation"]
+    loop_count = state.get("loop_count", 0)
     question = extract_question(messages)
     context_list = extract_documents(messages)
     context_str = "\n\n".join(context_list) if context_list else "No context available (Model internal knowledge used)."
@@ -158,7 +157,8 @@ async def grade_answer(state: GraphState):
                        Please regenerate your response addressing the critique above."""
     return {
         "acceptable": response.acceptable,
-        "messages": [HumanMessage(content=critique_message)]
+        "messages": [HumanMessage(content=critique_message)],
+        "loop_count": loop_count + 1
     }
 
 
