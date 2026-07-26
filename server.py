@@ -103,6 +103,6 @@ async def search_agentic_docs(query: str) -> str:
 
 
 if __name__ == "__main__":
-    mcp.run(transport="sse")
-    # mcp.run(transport="stdio")
+    # mcp.run(transport="sse")
+    mcp.run(transport="stdio")
 

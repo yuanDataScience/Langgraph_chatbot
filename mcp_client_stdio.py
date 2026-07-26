@@ -15,16 +15,16 @@ SERVER_CONFIG = {
 }
 
 
-async def get_mcp_tools() :
+def get_mcp_client() :
     """Works for stdio, sse, or a mix of both!"""
     client = MultiServerMCPClient(SERVER_CONFIG)
-    tools = await client.get_tools()
-    return tools
+    return client
 
 
 
 async def main():
-    tools = await get_mcp_tools()
+    client = get_mcp_client()
+    tools = await client.get_tools()
     print(tools)
 
 

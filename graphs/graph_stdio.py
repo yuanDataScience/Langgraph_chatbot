@@ -21,11 +21,13 @@ api_key = settings.OPENAI_API_KEY
 TAVILY_API_KEY = settings.TAVILY_API_KEY
 
 
-async def build_graph(mcp_tools: list):
+async def build_graph():
     """
     build StateGraph
     :return:
     """
+    client = get_mcp_client()
+    mcp_tools = await client.get_tools()
     llm = ChatOpenAI(api_key=api_key, model="gpt-4o-mini", temperature=0)
     tools = [TavilySearch(max_results=3, tavily_api_key=TAVILY_API_KEY)] + mcp_tools
     print(tools)

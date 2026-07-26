@@ -15,15 +15,13 @@ from fastapi import (
 )
 from langchain_mcp_adapters.client import MultiServerMCPClient
 
-from dependencies import get_generation
 from rag_process import pdf_text_extractor, vector_service
 from schemas import RAGResponse
-from server import mcp
 from upload import save_file
 from graphs.graph import build_graph
 
 SERVER_CONFIG = {
-    # Server 2: Remote/Local FastAPI server running over SSE
+    # config for mcp by sse transportation
     "fastapi_mcp_server": {
         "transport": "sse",
         "url": "http://localhost:8001/sse",
