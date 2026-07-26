@@ -1,4 +1,7 @@
+from contextlib import asynccontextmanager
 from typing import Annotated
+from schemas import RAGRequest
+from langchain_core.messages import HumanMessage
 
 from fastapi import (
     BackgroundTasks,
@@ -6,15 +9,41 @@ from fastapi import (
     HTTPException,
     status,
     File,
-    UploadFile, Depends
+    Request,
+    UploadFile,
+    Body,
 )
+from langchain_mcp_adapters.client import MultiServerMCPClient
 
 from dependencies import get_generation
 from rag_process import pdf_text_extractor, vector_service
 from schemas import RAGResponse
+from server import mcp
 from upload import save_file
+from graphs.graph import build_graph
 
-app = FastAPI()
+SERVER_CONFIG = {
+    # Server 2: Remote/Local FastAPI server running over SSE
+    "fastapi_mcp_server": {
+        "transport": "sse",
+        "url": "http://localhost:8001/sse",
+    }
+}
+
+
+@asynccontextmanager  # 1. CREATES a manager for FastAPI startup/shutdown
+async def lifespan(fastapi_app: FastAPI):
+    mcp_client = MultiServerMCPClient(SERVER_CONFIG)
+    mcp_tools = await mcp_client.get_tools()
+
+    # Compile graph dynamically with tools and store on app state
+    fastapi_app.state.agent = await build_graph(mcp_tools)
+
+    # PAUSES here while FastAPI runs and handles requests
+    yield
+
+
+app = FastAPI(lifespan=lifespan)
 
 
 @app.post("/upload")
@@ -43,5 +72,17 @@ async def file_upload_controller(
 
 
 @app.post("/generate_text", response_model=RAGResponse)
-async def query_by_RAG_controller(generation: dict = Depends(get_generation)) -> RAGResponse:
-    return RAGResponse(**generation)
+async def query_by_RAG_controller(request: Request, body: RAGRequest=Body(...)) -> RAGResponse:
+    try:
+        message = HumanMessage(content=body.question)
+
+        agent = request.app.state.agent
+        generation = await agent.ainvoke({"messages": [message]})
+        response = {"answer": generation.get("generation", "")}
+
+        return RAGResponse(**response)
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+

@@ -1,22 +1,15 @@
 from langchain_core.messages import SystemMessage, ToolMessage, HumanMessage
 from langchain_openai import ChatOpenAI
-from langchain_tavily import TavilySearch
 from langgraph.graph import END
-from langgraph.prebuilt import ToolNode
 from pydantic import BaseModel, Field
 
 from config import BaseConfig
 from graphs.state import GraphState
-from tools.retriever_tools import search_agentic_docs
-from tools.weather import get_weather
 from utils import print_message, extract_documents, extract_question
 
 settings = BaseConfig()
 
 api_key = settings.OPENAI_API_KEY
-TAVILY_API_KEY = settings.TAVILY_API_KEY
-
-tools = [TavilySearch(max_results=3, tavily_api_key=TAVILY_API_KEY), get_weather, search_agentic_docs]
 
 GENERATE_SYSTEM_PROMPT = f"""You are an assistant for question-answering tasks with access to multiple tools.
     use these tools to retrieve context to answer the question. If you don't know the answer,
@@ -82,19 +75,17 @@ GRADER_SYSTEM_PROMPT = """""You are a grader assessing whether an LLM generation
         answer: {answer}
         context: {context} 
     """
-llm = ChatOpenAI(api_key=api_key, model="gpt-4o-mini", temperature=0)
-llm_with_tools = llm.bind_tools(tools)
 
 
-async def generate_answer(state: GraphState) -> dict:
+async def generate_answer(state: GraphState, llm_with_tools: ChatOpenAI) -> dict:
     """
         Run agent reasoning node, synchronize context documents,
         and track web search tool usage safely.
         :param state: GraphState, manage graph state
         :return: dict containing new messages and state synchronization fields
         """
+
     print("----AGENT REASONING------")
-    current_loops = state.get("loop_count", 0)
 
     system_message = SystemMessage(content=GENERATE_SYSTEM_PROMPT)
 
@@ -110,9 +101,6 @@ async def generate_answer(state: GraphState) -> dict:
         "messages": [response],
         "generation": response.content
     }
-
-
-tool_node = ToolNode(tools)
 
 
 class GradeAnswer(BaseModel):
@@ -151,7 +139,7 @@ async def grade_answer(state: GraphState):
         question=question
     )
 
-    response = structured_llm_grader.invoke([SystemMessage(content=system_prompt)])
+    response = await structured_llm_grader.ainvoke([SystemMessage(content=system_prompt)])
     print(response)
     critique_message = f"""[SYSTEM EVALUATION & CRITIQUE]\n{response.recommendations}\n\n
                        Please regenerate your response addressing the critique above."""

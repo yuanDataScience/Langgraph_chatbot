@@ -34,14 +34,35 @@ def extract_documents(messages: list) -> list[str]:
 
     # 1. Look back through history to extract context from any ToolMessages
     # If no tools have run yet, this naturally results in an empty list []
-    tool_messages = [msg for msg in messages if isinstance(msg, ToolMessage)]
-    extracted_docs = [msg.content for msg in tool_messages if msg.name in doc_sources]
+    extracted_docs = []
+
+    for msg in messages:
+        if isinstance(msg, ToolMessage) and msg.name in doc_sources:
+            content = msg.content
+
+            # 1. If content is a list (MCP text blocks or Tavily results)
+            if isinstance(content, list):
+                for item in content:
+                    if isinstance(item, dict):
+                        # Extract 'text' from MCP content block, or 'content'/'snippet' from Tavily/Search dicts
+                        text = item.get("text") or item.get("content") or item.get("snippet") or str(item)
+                        extracted_docs.append(str(text))
+                    else:
+                        extracted_docs.append(str(item))
+
+            # 2. If content is a dict
+            elif isinstance(content, dict):
+                text = content.get("text") or content.get("content") or content.get("snippet") or str(content)
+                extracted_docs.append(str(text))
+
+            # 3. If content is already a string
+            elif content:
+                extracted_docs.append(str(content))
 
     return extracted_docs
 
 
 def extract_question(messages: list) -> str:
-
     for msg in messages:
         if isinstance(msg, HumanMessage):
             return msg.content
