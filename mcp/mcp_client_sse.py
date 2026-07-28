@@ -1,17 +1,13 @@
 import asyncio
-from pathlib import Path
 from langchain_mcp_adapters.client import MultiServerMCPClient
 
-BASE_DIR = Path(__file__).parent
-SERVER_SCRIPT = BASE_DIR / "server.py"
 
 SERVER_CONFIG = {
-    # Server 1: Local server running directly via Python over stdio
-    "local_search_server": {
-        "transport": "stdio",
-        "command": "python",
-        "args": [str(SERVER_SCRIPT)],
-    },
+    # config for mcp by sse transportation
+    "fastapi_mcp_server": {
+        "transport": "sse",
+        "url": "http://localhost:8001/sse",
+    }
 }
 
 

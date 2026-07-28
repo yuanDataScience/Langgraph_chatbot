@@ -1,10 +1,12 @@
-from langchain.tools import tool
 import httpx
-from datetime import datetime, timedelta
-import asyncio
+from mcp.server.fastmcp import FastMCP
+from rag_process.service import vector_service
+
+# for stdio
+mcp = FastMCP("Search Server")
 
 
-@tool
+@mcp.tool()
 async def get_weather(city: str, date: str = None) -> str:
     """Get weather information for a city.
 
@@ -73,15 +75,20 @@ async def get_weather(city: str, date: str = None) -> str:
     except Exception as e:
         return f"Error: Failed to get weather - {str(e)}"
 
-async def main():
-    next_week = (datetime.now() + timedelta(days=7)).strftime("%Y-%m-%d")
-    weather_forcast = await get_weather.ainvoke({"city": "Boston", "date": next_week})
-    print(weather_forcast)
-    weather_today = await get_weather.ainvoke({"city": "Boston"})
-    print(weather_today)
+
+@mcp.tool()
+async def search_agentic_docs(query: str) -> str:
+    """
+    Good for questions about generative agents, prompt engineering, and adversarial attacks.
+    Pass a natural language search query to retrieve context from the agentic ai database.
+    """
+    # Simply invoke your existing vector service retriever
+    docs = await vector_service.retriever.ainvoke(query)
+
+    # Flatten the document content into a single string for the LLM
+    return "\n\n".join([d.page_content for d in docs])
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
-
+    mcp.run(transport="stdio")
 

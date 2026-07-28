@@ -13,7 +13,6 @@ from graphs.state import GraphState
 from langchain_openai import ChatOpenAI
 from langchain_tavily import TavilySearch
 
-from mcp_client_stdio import get_mcp_client
 
 settings = BaseConfig()
 

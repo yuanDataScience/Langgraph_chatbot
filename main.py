@@ -3,6 +3,7 @@ from typing import Annotated
 from schemas import RAGRequest
 from langchain_core.messages import HumanMessage
 
+
 from fastapi import (
     BackgroundTasks,
     FastAPI,
@@ -13,25 +14,17 @@ from fastapi import (
     UploadFile,
     Body,
 )
-from langchain_mcp_adapters.client import MultiServerMCPClient
 
 from rag_process import pdf_text_extractor, vector_service
 from schemas import RAGResponse
 from upload import save_file
-from graphs.graph import build_graph
-
-SERVER_CONFIG = {
-    # config for mcp by sse transportation
-    "fastapi_mcp_server": {
-        "transport": "sse",
-        "url": "http://localhost:8001/sse",
-    }
-}
+from graphs.graph_sse import build_graph
+from mcp.mcp_client_sse import get_mcp_client
 
 
 @asynccontextmanager  # 1. CREATES a manager for FastAPI startup/shutdown
 async def lifespan(fastapi_app: FastAPI):
-    mcp_client = MultiServerMCPClient(SERVER_CONFIG)
+    mcp_client = get_mcp_client()
     mcp_tools = await mcp_client.get_tools()
 
     # Compile graph dynamically with tools and store on app state

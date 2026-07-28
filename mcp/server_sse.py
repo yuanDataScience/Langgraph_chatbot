@@ -1,22 +1,14 @@
 import httpx
-from langchain_tavily import TavilySearch
 from mcp.server.fastmcp import FastMCP
 
-from config import BaseConfig
 from rag_process.service import vector_service
 
-# mcp = FastMCP("Search Server")
-
+# for SSE
 mcp = FastMCP(
     name="My MCP Server",
     host="0.0.0.0",
     port=8001
 )
-
-settings = BaseConfig()
-TAVILY_API_KEY = settings.TAVILY_API_KEY
-
-tavily = TavilySearch(max_results=3, tavily_api_key=TAVILY_API_KEY)
 
 
 @mcp.tool()
@@ -103,6 +95,4 @@ async def search_agentic_docs(query: str) -> str:
 
 
 if __name__ == "__main__":
-    # mcp.run(transport="sse")
-    mcp.run(transport="stdio")
-
+    mcp.run(transport="sse")

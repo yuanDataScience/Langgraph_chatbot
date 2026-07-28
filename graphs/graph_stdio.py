@@ -13,7 +13,7 @@ from graphs.state import GraphState
 from langchain_openai import ChatOpenAI
 from langchain_tavily import TavilySearch
 
-from mcp_client_stdio import get_mcp_client
+from mcp.mcp_client_stdio import get_mcp_client
 
 settings = BaseConfig()
 
@@ -73,5 +73,4 @@ async def main():
 
 
 if __name__ == "__main__":
-    # app.get_graph().draw_mermaid_png(output_file_path="agent_workflow.png")
     asyncio.run(main())
