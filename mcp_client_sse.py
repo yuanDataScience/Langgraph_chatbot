@@ -3,7 +3,7 @@ from langchain_mcp_adapters.client import MultiServerMCPClient
 
 
 SERVER_CONFIG = {
-    # config for mcp by sse transportation
+    # config for mcp_service by sse transportation
     "fastapi_mcp_server": {
         "transport": "sse",
         "url": "http://localhost:8001/sse",

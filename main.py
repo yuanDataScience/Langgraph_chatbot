@@ -19,7 +19,7 @@ from rag_process import pdf_text_extractor, vector_service
 from schemas import RAGResponse
 from upload import save_file
 from graphs.graph_sse import build_graph
-from mcp.mcp_client_sse import get_mcp_client
+from mcp_client_sse import get_mcp_client
 
 
 @asynccontextmanager  # 1. CREATES a manager for FastAPI startup/shutdown
