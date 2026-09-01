@@ -8,6 +8,9 @@ filelock==3.16.1
 
 langchain==1.0.5
 langchain-core==1.0.4
+langchain-experimental==0.4.2
+langgraph_swarm==0.1.0
+langgraph_supervisor==0.0.31
 langchain-openai==1.0.2
 langchain-tavily==0.2.13
 langchain-text-splitters==1.0.0
@@ -19,6 +22,7 @@ loguru==0.7.3
 
 mypy==1.14.1
 mypy-extensions==1.0.0
+matplotlib==3.11.1
 
 openai==2.7.1
 pandas==2.2.3
@@ -42,4 +46,6 @@ streamlit==1.41.1
 tiktoken==0.8.0
 uvicorn==0.34.0
 httpx
-
+wikipedia==1.4.0
+yfinance==1.7.0
+tabulate==0.10.0
