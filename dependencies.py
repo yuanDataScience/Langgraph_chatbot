@@ -1,11 +1,16 @@
 from fastapi import Body, HTTPException
+
+from graphs.multi_agent_supervisor import supervisor
 from schemas import RAGRequest
-from graphs.graph import app
 
 
-async def get_generation(body: RAGRequest=Body(...)) -> dict:
+async def get_generation(body: RAGRequest = Body(...)) -> dict:
+    config = {"configurable": {"thread_id": "1", "user_id": "1"}}
     try:
-        generation = await app.ainvoke(body.dict())
+
+        generation = await supervisor.ainvoke({"messages": [{"role": "user",
+                       "content": body.query}]}, config
+        )
 
         return {
             "answer": generation.get("generation", ""),
@@ -13,6 +18,3 @@ async def get_generation(body: RAGRequest=Body(...)) -> dict:
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
-    
-
