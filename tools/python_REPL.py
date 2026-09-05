@@ -6,7 +6,7 @@ import asyncio
 import textwrap
 import matplotlib
 matplotlib.use('Agg')  # Force headless non-GUI backend before importing pyplot!
-import matplotlib.pyplot as plt
+
 
 repl = PythonREPL()
 
@@ -29,6 +29,7 @@ async def python_repl_tool(
         f"Python code executed:\n```python\n{code}\n```\n\n"
         f"Code output:\n```\n{result}```"
     )
+
 
 async def main():
     code = f"""

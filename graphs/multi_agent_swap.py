@@ -39,9 +39,10 @@ research_agent = create_agent(
 analyst_agent = create_agent(
     llm,
     [python_repl_tool, transfer_to_researcher],
-    system_prompt="""You generate plots of stock performance data provided by another assistant. 
-    When generating stock performance visualizations, ALWAYS save the figure to a file using `plt.savefig('plot.png')` 
-    and call `plt.close()`. DO NOT use `plt.show()`.""",
+    # system_prompt="""You generate plots of stock performance data provided by another assistant.
+    # When generating stock performance visualizations, ALWAYS save the figure to a file using `plt.savefig('plot.png')`
+    # and call `plt.close()`. DO NOT use `plt.show()`.""",
+    system_prompt = """You generate plots of stock performance data provided by another assistant.""",
     name="analyst"
 )
 

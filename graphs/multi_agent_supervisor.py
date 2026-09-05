@@ -12,6 +12,8 @@ from utils import pretty_print_messages
 settings = BaseConfig()
 api_key = settings.OPENAI_API_KEY
 
+
+
 # Add three tools to the list: wikipedia_tool, stock_data_tool, and python_repl_tool
 
 
@@ -29,13 +31,13 @@ research_agent = create_agent(
 analyst_agent = create_agent(
     llm,
     [python_repl_tool],
-    system_prompt="""You generate plots of stock performance data provided by another assistant. 
-    When generating stock performance visualizations, ALWAYS save the figure to a file using `plt.savefig('plot.png')` 
+    system_prompt="""You generate plots of stock performance data provided by another assistant.
+    When generating stock performance visualizations,ALWAYS ALWAYS use `plt.savefig()` to save generated figure
     and call `plt.close()`. DO NOT use `plt.show()`.""",
+    # system_prompt = """You generate plots of stock performance data provided by another assistant.""",
     name="analyst"
 )
 
-config = {"configurable": {"thread_id": "1", "user_id": "1"}}
 checkpointer = InMemorySaver()
 
 # Create the supervisor multi-agent graph and compile it
@@ -72,10 +74,11 @@ def print_agent(agent):
 
 if __name__ == "__main__":
     # print_agent(swarm_agent)
+    config = {"configurable": {"thread_id": "1", "user_id": "1"}}
 
     query = """Plot a chart of Meta's share price over the last month"""
     # asyncio.run(agent_run(query))
-    # asyncio.run(agent_run(supervisor, query, config))
-    asyncio.run(supervisor.ainvoke({"messages": [{"role": "user",
-                           "content": query}]}, config
-    ))
+    asyncio.run(agent_run(supervisor, query, config))
+    # asyncio.run(supervisor.ainvoke({"messages": [{"role": "user",
+    #                        "content": query}]}, config
+    # ))
