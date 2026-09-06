@@ -39,3 +39,18 @@ def pretty_print_messages(update, last_message=False):
         for m in messages:
             pretty_print_message(m, indent=is_subgraph)
         print("\n")
+
+
+def print_agent(agent, image_file_path: str):
+    png_bytes = agent.get_graph().draw_mermaid_png()
+
+    with open(image_file_path, "wb") as f:
+        f.write(png_bytes)
+
+
+async def agent_run(agent, query: str, config=None):
+    async for chunk in agent.astream(
+            {"messages": [{"role": "user",
+                           "content": query}]}, config
+    ):
+        pretty_print_messages(chunk)

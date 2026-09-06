@@ -1,9 +1,11 @@
+import asyncio
+
 from langchain.agents import create_agent
 from langchain_openai import ChatOpenAI
-from tools import wikipedia_tool, stock_data_tool, python_repl_tool
-from utils import pretty_print_messages
+
 from config import BaseConfig
-import asyncio
+from tools import wikipedia_tool, stock_data_tool, python_repl_tool
+from utils import print_agent, agent_run
 
 settings = BaseConfig()
 api_key = settings.OPENAI_API_KEY
@@ -23,29 +25,11 @@ You are an assistant for research and analysis of Fortune 500 companies. You hav
   and call `plt.close()`. DO NOT use `plt.show()`.
 """
 
-# Create an agent using the create_react_agent function
-
-
-def print_agent(agent):
-    png_bytes = agent.get_graph().draw_mermaid_png()
-
-    with open("agent_graph.png", "wb") as f:
-        f.write(png_bytes)
-
-async def agent_run(agent, query: str):
-    async for chunk in agent.astream(
-            {"messages": [{"role": "user",
-                           "content": query}]}
-    ):
-        pretty_print_messages(chunk)
-
+agent = create_agent(model=llm, system_prompt=prompt, tools=tools, name="financial_assistance")
 
 if __name__ == "__main__":
-    agent = create_agent(model=llm, system_prompt=prompt, tools=tools, name="financial_assistance")
+    print_agent(agent, "agent.png")
 
-    # print_agent(agent)
     query = """Tell me Tesla's current CEO, their latest stock price, 
     and generate a plot of the closing price with the most up-to-date data you have available."""
     asyncio.run(agent_run(agent, query))
-
-

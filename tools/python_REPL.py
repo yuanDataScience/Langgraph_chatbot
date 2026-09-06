@@ -1,12 +1,12 @@
 import asyncio
+import textwrap
 from typing import Annotated
+
+import matplotlib
 from langchain_core.tools import tool
 from langchain_experimental.utilities import PythonREPL
-import asyncio
-import textwrap
-import matplotlib
-matplotlib.use('Agg')  # Force headless non-GUI backend before importing pyplot!
 
+matplotlib.use('Agg')  # Force headless non-GUI backend before importing pyplot!
 
 repl = PythonREPL()
 
@@ -46,4 +46,3 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
-

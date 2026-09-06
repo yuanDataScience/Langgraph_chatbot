@@ -7,7 +7,6 @@ class BaseConfig(BaseSettings):
     OPENAI_API_KEY: Optional[str]
     PINECONE_API_KEY: Optional[str]
     TAVILY_API_KEY: Optional[str]
-       
 
     """Loads the dotenv file. Including this is necessary to get
     pydantic to load a .env file."""

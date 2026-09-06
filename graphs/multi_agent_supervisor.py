@@ -1,42 +1,17 @@
 import asyncio
 
-from langchain.agents import create_agent
 from langchain_openai import ChatOpenAI
 from langgraph.checkpoint.memory import InMemorySaver
 from langgraph_supervisor import create_supervisor
 
 from config import BaseConfig
-from tools import wikipedia_tool, stock_data_tool, python_repl_tool
-from utils import pretty_print_messages
+from sub_agents import research_agent, analyst_agent
+from utils import agent_run, print_agent
 
 settings = BaseConfig()
 api_key = settings.OPENAI_API_KEY
 
-
-
-# Add three tools to the list: wikipedia_tool, stock_data_tool, and python_repl_tool
-
-
 llm = ChatOpenAI(api_key=api_key, model="gpt-4o-mini")
-
-# Create a researcher agent with access to two tools + the handoff tool
-research_agent = create_agent(
-    llm,
-    tools=[wikipedia_tool, stock_data_tool],
-    system_prompt="You provide summaries from Wikipedia, and can query load raw, numerical stock performance data.",
-    name="researcher"
-)
-
-# Create a analyst agent with access to one tool + the handoff tool
-analyst_agent = create_agent(
-    llm,
-    [python_repl_tool],
-    system_prompt="""You generate plots of stock performance data provided by another assistant.
-    When generating stock performance visualizations,ALWAYS ALWAYS use `plt.savefig()` to save generated figure
-    and call `plt.close()`. DO NOT use `plt.show()`.""",
-    # system_prompt = """You generate plots of stock performance data provided by another assistant.""",
-    name="analyst"
-)
 
 checkpointer = InMemorySaver()
 
@@ -56,28 +31,11 @@ supervisor = create_supervisor(
     output_mode="last_message"
 ).compile(checkpointer=checkpointer)
 
-
-async def agent_run(agent, query: str, config=None):
-    async for chunk in agent.astream(
-            {"messages": [{"role": "user",
-                           "content": query}]}, config
-    ):
-        pretty_print_messages(chunk)
-
-
-def print_agent(agent):
-    png_bytes = agent.get_graph().draw_mermaid_png()
-
-    with open("swarm_agent_graph.png", "wb") as f:
-        f.write(png_bytes)
-
-
 if __name__ == "__main__":
-    # print_agent(swarm_agent)
+    print_agent(supervisor, "supervisor_agent.png")
     config = {"configurable": {"thread_id": "1", "user_id": "1"}}
 
     query = """Plot a chart of Meta's share price over the last month"""
-    # asyncio.run(agent_run(query))
     asyncio.run(agent_run(supervisor, query, config))
     # asyncio.run(supervisor.ainvoke({"messages": [{"role": "user",
     #                        "content": query}]}, config
