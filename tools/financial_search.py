@@ -23,13 +23,14 @@ def _fetch_stock_sync(symbol: str, period: str = "30d") -> pd.DataFrame:
 
 @tool
 async def stock_data_tool(
-        company_ticker: Annotated[str, "The ticker symbol of the company to retrieve their stock performance data."],
-        num_days: Annotated[int, "The number of business days of stock data required to respond to the user query."]
+        company_ticker: Annotated[str, "The ticker symbol of the company to retrieve stock performance data."],
+        num_days: Annotated[int, "The number of business days of stock data."]
 ) -> str:
     """
-    Use this to look-up stock performance data for companies.
-    You may need to convert company names into ticker symbols to call this function, e.g, Apple Inc. -> AAPL,
-    and you may need to convert weeks, months, and years, into days.
+    Use this to look up stock performance data for companies.
+    Please check if you need to convert company names into ticker symbols in order to call this function,
+    for example, you need to convert Apple Inc. to its ticker symbol: AAPL,
+    Convert weeks, months, and years, into days if needed.
     """
     try:
         # Runs _fetch_stock_sync in a background ThreadPoolExecutor thread

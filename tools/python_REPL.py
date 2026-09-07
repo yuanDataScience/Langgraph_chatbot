@@ -15,8 +15,8 @@ repl = PythonREPL()
 async def python_repl_tool(
         code: Annotated[str, "The python code to execute to generate your chart."],
 ) -> str:
-    """Use this to execute python code. If you want to see the output of a value,
-    you should print it out with `print(...)`. This is visible to the user. The chart should be displayed using `plt.show()`."""
+    """Use this to execute python code. print out the output using `print(...)`
+    if you want to see its value. The printed values are visible to the user."""
     try:
         # Offload CPU-bound exec() to a background thread to keep event loop responsive
         clean_code = textwrap.dedent(code).strip()

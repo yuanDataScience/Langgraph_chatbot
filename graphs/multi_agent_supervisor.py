@@ -19,7 +19,7 @@ checkpointer = InMemorySaver()
 research_agent = create_agent(
     llm,
     tools=[wikipedia_tool, stock_data_tool],
-    system_prompt="You provide summaries from Wikipedia, and can query load raw, numerical stock performance data.",
+    system_prompt="You provide summaries from Wikipedia, and can query raw, numerical stock performance data.",
     name="researcher"
 )
 
@@ -28,7 +28,7 @@ analyst_agent = create_agent(
     llm,
     tools=[python_repl_tool],
     system_prompt="""You generate plots of stock performance data provided by another assistant.
-    When generating stock performance visualizations,ALWAYS ALWAYS use `plt.savefig()` to save generated figure
+    When generating stock performance visualizations,ALWAYS use `plt.savefig()` to save generated figure
     and call `plt.close()`. DO NOT use `plt.show()`.""",
     name="analyst"
 )
@@ -40,7 +40,7 @@ supervisor = create_supervisor(
     agents=[research_agent, analyst_agent],
     prompt=(
         "You are a supervisor managing two agents:\n"
-        "- a research agent. Assign research and data collection tasks to this agent\n"
+        "- research agent: assign research and data query and collection tasks to this agent\n"
         "- an analyst agent. Assign the creation of visualizations via code to this agent\n"
         "Assign work to one agent at a time, do not call agents in parallel.\n"
         "Do not do any work yourself."

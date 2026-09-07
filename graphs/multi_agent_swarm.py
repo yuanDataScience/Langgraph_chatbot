@@ -17,19 +17,19 @@ llm = ChatOpenAI(api_key=api_key, model="gpt-4o-mini")
 # Create a handoff tool for analyst -> researcher
 transfer_to_researcher = create_handoff_tool(
     agent_name="researcher",
-    description="Transfer user to the researcher assistant, who can retrieve Wikipedia summaries or load stock performance data.",
+    description="Transfer user to the researcher assistant, who can retrieve Wikipedia summaries or query stock performance data.",
 )
 
 # Create a handoff tool for researcher -> analyst
 transfer_to_analyst = create_handoff_tool(
     agent_name="analyst",
-    description="Transfer user to the analyst assistant, who can create visualizations of provided data.",
+    description="Transfer user to the analyst assistant, who can create visualizations for provided data.",
 )
 
 research_agent = create_agent(
     llm,
     tools=[wikipedia_tool, stock_data_tool, transfer_to_analyst],
-    system_prompt="You provide summaries from Wikipedia, and can query load raw, numerical stock performance data.",
+    system_prompt="You provide summaries from Wikipedia, and can query raw, numerical stock performance data.",
     name="researcher"
 )
 
