@@ -28,8 +28,8 @@ You are an assistant for research and analysis of Fortune 500 companies. You hav
 agent = create_agent(model=llm, system_prompt=prompt, tools=tools, name="financial_assistance")
 
 if __name__ == "__main__":
-    print_agent(agent, "agent.png")
+    config = {"configurable": {"thread_id": "1", "user_id": "1"}}
 
-    query = """Tell me Tesla's current CEO, their latest stock price, 
-    and generate a plot of the closing price with the most up-to-date data you have available."""
-    asyncio.run(agent_run(agent, query))
+    query = """Plot a chart of Meta's share price over the last month"""
+    asyncio.run(agent_run(agent, query, config))
+
