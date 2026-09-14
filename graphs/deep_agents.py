@@ -6,12 +6,13 @@ from config import BaseConfig
 from langgraph_supervisor import create_supervisor
 from langgraph.checkpoint.memory import InMemorySaver
 import asyncio
+from deepagents import FilesystemPermission, create_deep_agent
+from langchain_core.tools import tool
+from langchain_tavily import TavilySearch
 
 settings = BaseConfig()
 api_key = settings.OPENAI_API_KEY
-
-# Add three tools to the list: wikipedia_tool, stock_data_tool, and python_repl_tool
-
+TAVILY_API_KEY = settings.TAVILY_API_KEY
 
 llm = ChatOpenAI(api_key=api_key, model="gpt-4o-mini")
 
