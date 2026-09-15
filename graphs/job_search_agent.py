@@ -1,24 +1,17 @@
+import asyncio
+from typing import List
+
 from deepagents import FilesystemPermission, create_deep_agent
 from langchain_openai import ChatOpenAI
-from tools import internet_search
-from utils import pretty_print_messages
-from config import BaseConfig
 from pydantic import BaseModel, Field
-from typing import List
-import asyncio
+
+from config import BaseConfig
+from tools import internet_search
+from schemas import JobList
 
 
 # 1. Define your models
-class JobPosting(BaseModel):
-    company: str = Field(description="Name of the hiring company.")
-    title: str = Field(description="Job title of the position.")
-    location: str = Field(description="Location or remote status.")
-    job_description_summary: str = Field(description="summary of job description")
-    link: str = Field(description="Direct URL to the job posting.")
-    good_match: str = Field(description="One sentence explaining why this is a good match.")
 
-class JobList(BaseModel):
-    jobs: List[JobPosting]
 
 # 2. Automatically generate the schema string to inject into the prompt
 schema_json_example = JobList.model_json_schema()
@@ -43,7 +36,6 @@ editor's context.
     Output ONLY this block format with no extra text before or after :\n
     <JOBS>\n[ ... ]\n</JOBS>"""
 
-
 # Researchers may write under /research/** and are denied writes elsewhere.
 research_permissions = [
     FilesystemPermission(operations=["read", "write"], paths=["/research/**"], mode="allow"),
@@ -55,10 +47,10 @@ job_search_agent = {
     "description": (
         "find relevant jobs"
     ),
-    "system_prompt": JOB_SEARCH_PROMPT,         # its own brain — never inherited
-    "tools": [internet_search],            # override — replaces the inherited set
-    "model": model,                        # override — the cheaper Haiku 4.5
-    "permissions": research_permissions,   # override — scoped write access
+    "system_prompt": JOB_SEARCH_PROMPT,  # its own brain — never inherited
+    "tools": [internet_search],  # override — replaces the inherited set
+    "model": model,  # override — the cheaper Haiku 4.5
+    "permissions": research_permissions,  # override — scoped write access
 }
 
 
@@ -91,7 +83,6 @@ async def job_search_agent_demo() -> None:
                 for msg in output["messages"]:
                     msg.pretty_print()
 
+
 if __name__ == "__main__":
     asyncio.run(job_search_agent_demo())
-
-

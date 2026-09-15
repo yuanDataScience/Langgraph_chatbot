@@ -1,24 +1,18 @@
-from typing import Annotated, Literal, TypeAlias
-from uuid import uuid4
-import tiktoken
-from loguru import logger
-from datetime import datetime
+from typing import List
 
 from pydantic import (
     BaseModel,
     Field,
-    computed_field,
-    IPvAnyAddress,
-    HttpUrl,
 )
 
-SupportedTextModels: TypeAlias = Literal["gpt-3.5", "gpt-4o"]
-TokenCount = Annotated[int, Field(ge=0)]
 
-class RAGRequest(BaseModel):
-    question: str
-    
+class JobPosting(BaseModel):
+    company: str = Field(description="Name of the hiring company.")
+    title: str = Field(description="Job title of the position.")
+    location: str = Field(description="Location or remote status.")
+    link: str = Field(description="Direct URL to the job posting.")
+    good_match: str = Field(description="One sentence explaining why this is a good match.")
 
-class RAGResponse(BaseModel):
-    answer: str
-    web_search: bool
+
+class JobList(BaseModel):
+    jobs: List[JobPosting]
