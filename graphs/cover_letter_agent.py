@@ -19,7 +19,7 @@ cover_letter_permissions = [
 ]
 
 cover_letter_agent = {
-    "name": "job-search-agent",
+    "name": "cover-letter-agent",
     "description": (
         "find relevant jobs"
     ),

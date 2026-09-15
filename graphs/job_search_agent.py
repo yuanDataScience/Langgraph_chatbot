@@ -13,6 +13,7 @@ class JobPosting(BaseModel):
     company: str = Field(description="Name of the hiring company.")
     title: str = Field(description="Job title of the position.")
     location: str = Field(description="Location or remote status.")
+    job_description_summary: str = Field(description="summary of job description")
     link: str = Field(description="Direct URL to the job posting.")
     good_match: str = Field(description="One sentence explaining why this is a good match.")
 
@@ -27,10 +28,10 @@ api_key = settings.OPENAI_API_KEY
 
 model = ChatOpenAI(api_key=api_key, model="gpt-4o-mini")
 
-JOB_SEARCH_PROMPT = f"""Search and select 5 real postings that match the user's title, locations, and skills.
+JOB_SEARCH_PROMPT = f"""Search and select 5 real postings that match the user's target title, location, and skills.
     
 How to work:
-1. Use internet_search to find matching job postings based on user's title, locations and skills
+1. Use internet_search to find matching job postings based on user's target title, location and skills
 2. Save the COMPLETE, verbatim output of ALL your searches to a single file:
 write_file("/research/sources.md", ...). Paste the results exactly
 as the tool returned them — every result's title, URL, and full content
