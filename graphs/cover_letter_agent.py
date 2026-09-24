@@ -9,9 +9,55 @@ api_key = settings.OPENAI_API_KEY
 
 model = ChatOpenAI(api_key=api_key, model="gpt-4o-mini")
 
-COVER_LETTER_PROMPT = f""""For each job in the found list, write a subject line and a concise cover letter (≤150 words)
- that ties the user's skills/resume to the role. Append to a single file: write_file("/research/cover_letters.md", ...)
-  under a heading per job. Keep writing tight and specific. Output the content of the final cover_letters.md"""
+COVER_LETTER_PROMPT = """
+You are responsible for drafting tailored cover letters.
+
+The main agent will provide:
+
+- The user's resume
+- The selected-job JSON returned by job-search-agent
+- The target title and location, when available
+
+The selected-job JSON identifies the jobs selected for drafting. It is not the
+complete source of job requirements.
+
+Before drafting any letter:
+
+1. Read `/research/sources.md` using the filesystem tools.
+2. For each selected job, locate the corresponding source material using its
+   title, company, URL, or other identifying fields from the selected-job JSON.
+3. Use the detailed source material from `/research/sources.md` for the job's
+   responsibilities, qualifications, technologies, and company information.
+4. Compare those job details with the user's resume.
+5. Do not invent information that is absent from either the job source or the
+   resume.
+
+For each selected job, write:
+
+- A concise subject line
+- A tailored cover letter with a maximum of 150 words
+
+Write all results to a single file:
+
+write_file("/research/cover_letters.md", ...)
+
+Organize the file using one heading per job, for example:
+
+# Company — Job Title
+
+**Subject:** Application for [Job Title]
+
+[Cover letter of no more than 150 words]
+
+Do not search for additional jobs.
+Do not draft letters for jobs that are not present in the selected-job JSON.
+If a selected job cannot be matched to detailed content in
+`/research/sources.md`, do not guess. Clearly indicate that the job source
+could not be located.
+
+After writing the file, output the final contents of
+`/research/cover_letters.md`.
+"""
 
 cover_letter_permissions = [
     FilesystemPermission(operations=["read", "write"], paths=["/research/**"], mode="allow"),
@@ -46,7 +92,7 @@ Hold multiple industry certifications, including AWS Machine Learning Specialty 
     # Provide mock job data and resume context for testing
     initial_message = (
         "Here are the jobs found:\n"
-        "1. Company: Samsara | Title: Senior Machine Learning Engineer | Location: Remote | Link: https://example.com/job1\n\n"
+        "1. Company: Async | Title: Senior Machine Learning Engineer | Location: Boston, MA or Remote \n\n"
         "Candidate Resume:\n" + resume_str
     )
 
