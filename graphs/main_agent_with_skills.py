@@ -28,14 +28,6 @@ For ordinary questions:
 For career-related requests:
 
 Use the available `career-workflow` Skill to complete the user's request.
-
-The workflow has two mandatory sequential subagent calls:
-
-1. Call job-search-agent.
-2. After it returns successfully, call cover-letter-agent.
-3. Only after cover-letter-agent returns may you respond to the user.
-
-The response from job-search-agent is intermediate data, not a final answer.
 Never stop after the research phase merely because the search agent returned a
 valid result.
 
@@ -132,3 +124,4 @@ if __name__ == "__main__":
     initial_message = make_task_prompt(resume_str, skills, target_title, target_location)
 
     asyncio.run(run_agent_test(initial_message))
+
