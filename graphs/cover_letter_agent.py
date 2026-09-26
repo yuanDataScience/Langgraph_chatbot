@@ -1,8 +1,9 @@
+import asyncio
+
 from deepagents import FilesystemPermission, create_deep_agent
 from langchain_openai import ChatOpenAI
-from tools import internet_search
+
 from config import BaseConfig
-import asyncio
 
 settings = BaseConfig()
 api_key = settings.OPENAI_API_KEY
@@ -21,16 +22,31 @@ The main agent will provide:
 The selected-job JSON identifies the jobs selected for drafting. It is not the
 complete source of job requirements.
 
-Before drafting any letter:
+Before drafting, perform exactly this operation:
 
-1. Read `/research/sources.md` using the filesystem tools.
-2. For each selected job, locate the corresponding source material using its
-   title, company, URL, or other identifying fields from the selected-job JSON.
-3. Use the detailed source material from `/research/sources.md` for the job's
+read_file("/research/sources.md")
+
+The exact path is /research/sources.md. Do not use glob, ls, directory
+search, or filesystem discovery to locate it.
+
+If read_file("/research/sources.md") fails:
+- Do not search for another path.
+- Do not repeatedly retry the filesystem search.
+- State that the source file could not be read.
+- Do not invent job details.
+
+1. Compare the verified job information with the candidate resume. Do not claim candidate 
+experience that is not explicitly supported by the resume.
+2. Use the detailed source material from `/research/sources.md` for the job's
    responsibilities, qualifications, technologies, and company information.
-4. Compare those job details with the user's resume.
-5. Do not invent information that is absent from either the job source or the
-   resume.
+3. Compare those job details with the user's resume.
+4. Use only information supported by the candidate resume and the verified job
+description. Do not invent or assume technologies, cloud platforms,
+projects, leadership experience, company initiatives, or responsibilities.
+5. If a technology is not present in the resume, do not claim that the candidate
+has experience with it. You may describe it as a skill sought by the employer,
+but do not claim proficiency.   
+6. use candidate's actual name in the signature.
 
 For each selected job, write:
 
@@ -48,6 +64,9 @@ Organize the file using one heading per job, for example:
 **Subject:** Application for [Job Title]
 
 [Cover letter of no more than 150 words]
+
+Best regards,
+[the candidate's actual name]
 
 Do not search for additional jobs.
 Do not draft letters for jobs that are not present in the selected-job JSON.
@@ -69,16 +88,16 @@ cover_letter_agent = {
     "description": (
         "find relevant jobs"
     ),
-    "system_prompt": COVER_LETTER_PROMPT,         # its own brain — never inherited
-    "model": model,                        # override — the cheaper Haiku 4.5
-    "permissions": cover_letter_permissions,   # override — scoped write access
+    "system_prompt": COVER_LETTER_PROMPT,  # its own brain — never inherited
+    "model": model,  # override — the cheaper Haiku 4.5
+    "permissions": cover_letter_permissions,  # override — scoped write access
 }
 
 
 async def cover_letter_agent_test():
     resume_str = """Name: Yuan Huang
 Title: Machine Learning Architect
-Current Company: Sion Power
+Current Company: XYZ company
 ML architect with 10+ years of experience designing and delivering end‑to‑end AI systems for scientific cloud/on‑prem environments. I specialize in building ML platforms that integrate data engineering, model development, CI/CD, and MLOps automation into reliable, production‑ready workflows.
 
 
@@ -91,9 +110,9 @@ Hold multiple industry certifications, including AWS Machine Learning Specialty 
 """
     # Provide mock job data and resume context for testing
     initial_message = (
-        "Here are the jobs found:\n"
-        "1. Company: Async | Title: Senior Machine Learning Engineer | Location: Boston, MA or Remote \n\n"
-        "Candidate Resume:\n" + resume_str
+            "Here are the jobs found:\n"
+            "1. Company: Async | Title: Senior Machine Learning Engineer | Location: Boston, MA or Remote \n\n"
+            "Candidate Resume:\n" + resume_str
     )
 
     root_instructions = (

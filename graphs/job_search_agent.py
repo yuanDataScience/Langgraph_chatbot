@@ -1,14 +1,11 @@
 import asyncio
-from typing import List
 
 from deepagents import FilesystemPermission, create_deep_agent
 from langchain_openai import ChatOpenAI
-from pydantic import BaseModel, Field
 
 from config import BaseConfig
-from tools import internet_search
 from schemas import JobList
-
+from tools import internet_search
 
 # 1. Define your models
 
@@ -31,7 +28,7 @@ as the tool returned them — every result's title, URL, and full content
 snippet. Do NOT summarize, trim, or reformat. This one file is your raw
 archive: all the bulky material stays here so it never clutters the
 editor's context.
-3. Only then, from what you found, select the best 5 postings and output them 
+3. Only after the file is successful saved, from what you found, select the best 5 postings and output them 
    strictly follow this JSON schema:\n{schema_json_example}\n
     Output ONLY this block format with no extra text before or after :\n
     <JOBS>\n[ ... ]\n</JOBS>"""

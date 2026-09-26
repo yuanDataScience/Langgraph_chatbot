@@ -41,6 +41,11 @@ If the job-search agent fails, stop the workflow and report the failure. If it
 returns successfully, continue immediately to Step 2.
 
 ## Step 2: Cover Letters
+MANDATORY TASK-PAYLOAD REQUIREMENT:
+The cover-letter task description must contain the literal path: /research/sources.md
+
+Do not invoke cover-letter-agent if that exact path is missing from the
+task description.
 
 After the job-search agent returns successfully, invoke
 `cover-letter-agent` immediately.
@@ -51,6 +56,12 @@ Pass it:
 - The selected-job result returned by `job-search-agent`
 - The instruction to read `/research/sources.md` for the detailed job
   descriptions
+  
+
+The task description must also contain:
+- the complete candidate resume;
+- the complete selected-job JSON;
+- the exact source-file path /research/sources.md.
 
 The selected-job result identifies which jobs to use. The detailed job
 information should be read from `/research/sources.md`, rather than copied
