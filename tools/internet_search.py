@@ -18,7 +18,7 @@ tavily_tool = TavilySearch(max_results=3, include_raw_content=False, tavily_api_
 @tool
 async def internet_search(
         query: str,
-        topic: Literal["general", "news", "finance"] = "general"
+        topic: Literal["general", "news", "AI"] = "general"
 ) -> List[Dict[str, Any]]:
     """Search the web using Tavily."""
     # TavilySearch accepts a dictionary input or string query depending on usage;
