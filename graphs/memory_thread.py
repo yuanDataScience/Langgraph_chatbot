@@ -14,6 +14,8 @@ settings = BaseConfig()
 api_key = settings.OPENAI_API_KEY
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 MEMORY_DIR = PROJECT_ROOT / "memories"
+
+# create two thread_id configurations for testing
 config_blue = {"configurable": {"thread_id": "thread-1"}}
 config_red = {"configurable": {"thread_id": "thread-2"}}
 
@@ -70,15 +72,16 @@ agent = create_deep_agent(
     system_prompt=ROOT_INSTRUCTIONS,
     subagents=[],
     backend=CompositeBackend(
-        default=StateBackend(),
-        routes={"/memories/": StoreBackend(namespace=memory_namespace)}),
+        default=StateBackend(),  # default backend to maintain state information
+        routes={"/memories/": StoreBackend(namespace=memory_namespace)}),  # long-term memory backed by StoreBackend
     model=model,
-    memory=["/memories/AGENTS.md"],
-    checkpointer=MemorySaver(),
-    store=store,
+    memory=["/memories/AGENTS.md"],  # specify long-term memory file storage location
+    checkpointer=MemorySaver(),  # specify MemorySaver checkpointer
+    store=store,  # provide a InMemoryStore() to support StoreBackend
 )
 
 
+# demonstrate short-term memory via checkpointer
 def checkpointer_demo_config_blue() -> None:
     agent.invoke(
         {"messages": [{"role": "user", "content": "my favorite colour is blue."}]},
