@@ -135,6 +135,7 @@ async def memory_demo() -> None:
     except Exception as e:
         print(f"Error: {e}")
 
+    # pass demo_context to agent. This defines the namespace for long-term memory
     result = await agent.ainvoke(
         {"messages": [{"role": "user", "content": "What is the maximum line length of our code style?"}]},
         config=config_blue,
