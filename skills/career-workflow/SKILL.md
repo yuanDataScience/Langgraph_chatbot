@@ -61,7 +61,7 @@ Pass it:
 The task description must also contain:
 - the complete candidate resume;
 - the complete selected-job JSON;
-- the exact source-file path /research/sources.md.
+- the exact source-file path /research/sources.md
 
 The selected-job result identifies which jobs to use. The detailed job
 information should be read from `/research/sources.md`, rather than copied
@@ -69,7 +69,8 @@ entirely into the delegation message.
 
 The cover-letter agent must be invoked even if the selected-job result contains
 fewer than five jobs, provided that the job-search agent returned successfully.
-Do not silently stop after the research phase.
+Do not silently stop after the research phase. The cover-letter agent must use candidate's actual
+name in the signature.
 
 Wait for the cover-letter agent to return.
 

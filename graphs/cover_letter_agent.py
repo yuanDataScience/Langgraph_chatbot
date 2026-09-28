@@ -80,7 +80,7 @@ After writing the file, output the final contents of
 
 cover_letter_permissions = [
     FilesystemPermission(operations=["read", "write"], paths=["/research/**"], mode="allow"),
-    FilesystemPermission(operations=["write"], paths=["/**"], mode="deny"),
+    FilesystemPermission(operations=["read", "write"], paths=["/**"], mode="deny"),
 ]
 
 cover_letter_agent = {

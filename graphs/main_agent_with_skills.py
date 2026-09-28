@@ -36,6 +36,7 @@ cover-letter-agent. Pass all confirmed jobs in that single task call. The cover-
 must draft a cover letter for every job and write them to one output file.
 - Do not create one task call per job.
 - Do not issue multiple cover-letter task calls in the same assistant message.
+- Use candidate's actual name in the signature.
 
 The subagents do not automatically receive the complete parent conversation.
 Therefore, explicitly pass all required information in each task description.

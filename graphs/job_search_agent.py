@@ -36,7 +36,7 @@ editor's context.
 # Researchers may write under /research/** and are denied writes elsewhere.
 research_permissions = [
     FilesystemPermission(operations=["read", "write"], paths=["/research/**"], mode="allow"),
-    FilesystemPermission(operations=["write"], paths=["/**"], mode="deny"),
+    FilesystemPermission(operations=["read", "write"], paths=["/**"], mode="deny"),
 ]
 
 job_search_agent = {
