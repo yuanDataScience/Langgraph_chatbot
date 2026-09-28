@@ -56,8 +56,8 @@ Do not invoke it once per job.
 """
 
 main_agent_permissions = [
-    FilesystemPermission(operations=["read", "write"], paths=["/research/**", "/memories/**"], mode="allow"),
-    FilesystemPermission(operations=["write"], paths=["/**"], mode="deny"),
+    FilesystemPermission(operations=["read"], paths=["/research/**"], mode="allow"),
+    FilesystemPermission(operations=["read", "write"], paths=["/**"], mode="deny"),
 ]
 
 agent = create_deep_agent(
@@ -67,7 +67,6 @@ agent = create_deep_agent(
     backend=CompositeBackend(
         default=StateBackend(),
         routes={"/research/": FilesystemBackend(root_dir=RESEARCH_DIR, virtual_mode=True),
-                # "/memories/": StoreBackend(namespace=memory_namespace)
                 }),
     model=model,
     permissions=main_agent_permissions,

@@ -1,5 +1,4 @@
 import asyncio
-from pathlib import Path
 
 from deepagents import (create_deep_agent)
 from deepagents.backends import CompositeBackend, StateBackend, StoreBackend
@@ -12,15 +11,18 @@ from config import BaseConfig
 
 settings = BaseConfig()
 api_key = settings.OPENAI_API_KEY
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
-MEMORY_DIR = PROJECT_ROOT / "memories"
 
 # create two thread_id configurations for testing
 config_blue = {"configurable": {"thread_id": "thread-1"}}
 config_red = {"configurable": {"thread_id": "thread-2"}}
 
 model = ChatOpenAI(api_key=api_key, model="gpt-4o-mini")
-demo_context = {"user_id": "u_123", "workspace_id": "acme"}
+
+# define user_id and workspace_id in demo_context
+# (user_id, workspace_id) is used to define namespace
+demo_context = {"user_id": "u_123", "workspace_id": "scidataapp"}
+
+# define a InMemoryStore to support StoreBackend for memory
 store = InMemoryStore()
 
 
@@ -37,6 +39,7 @@ def get_namespace(context):
     )
 
 
+# initialize the store with namespace, file location and data
 store.put(
     get_namespace(demo_context),
     "/AGENTS.md",
@@ -73,7 +76,9 @@ agent = create_deep_agent(
     subagents=[],
     backend=CompositeBackend(
         default=StateBackend(),  # default backend to maintain state information
-        routes={"/memories/": StoreBackend(namespace=memory_namespace)}),  # long-term memory backed by StoreBackend
+
+        # long-term memory backed by StoreBackend
+        routes={"/memories/": StoreBackend(namespace=memory_namespace)}),
     model=model,
     memory=["/memories/AGENTS.md"],  # specify long-term memory file storage location
     checkpointer=MemorySaver(),  # specify MemorySaver checkpointer
@@ -83,6 +88,7 @@ agent = create_deep_agent(
 
 # demonstrate short-term memory via checkpointer
 def checkpointer_demo_config_blue() -> None:
+    # test the message history storage and retrieval using the same thread_id
     agent.invoke(
         {"messages": [{"role": "user", "content": "my favorite colour is blue."}]},
         config=config_blue,
@@ -103,6 +109,7 @@ def checkpointer_demo_config_blue() -> None:
         for message in latest_snapshot.values.get("messages", []):
             message.pretty_print()
 
+    # test a different thread_id
     print("\n---------------------start to test config_red-----------------------\n")
     result = agent.invoke(
         {"messages": [{"role": "user", "content": "What is my favorite colour?"}]},
@@ -115,9 +122,10 @@ def checkpointer_demo_config_blue() -> None:
 
 async def memory_demo() -> None:
     initial_message = "save to memories that we change the maximum line length to 88 characters"
+
     try:
         async for step in agent.astream({"messages": [{"role": "user", "content": initial_message}]},
-                                        context={"user_id": "u_123", "workspace_id": "acme"},
+                                        context=demo_context,
                                         config=config_blue):
             for node_name, output in step.items():
                 print(f"--- Node: {node_name} ---")

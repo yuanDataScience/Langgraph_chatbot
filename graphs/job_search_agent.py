@@ -46,7 +46,7 @@ job_search_agent = {
     ),
     "system_prompt": JOB_SEARCH_PROMPT,  # its own brain — never inherited
     "tools": [internet_search],  # override — replaces the inherited set
-    "model": model,  # override — the cheaper Haiku 4.5
+    "model": model,  # GPT-4o-mini
     "permissions": research_permissions,  # override — scoped write access
 }
 
