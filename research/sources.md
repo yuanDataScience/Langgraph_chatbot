@@ -1,1 +1,122 @@
-{"query": "Senior Machine Learning Engineer MLOps Architect jobs in Boston MA or remote Python Kubernetes Airflow MLflow LangGraph Docker", "results": [{"url": "https://www.builtinboston.com/jobs/data-analytics/machine-learning/senior?page=2", "title": "Best Senior Machine Learning Jobs in Boston, MA 2026 | Built In Boston", "content": "Design, build, and deploy production-grade ML systems for ICS/xOT cybersecurity, including threat detection, anomaly detection, NLP/LLM applications, and scalable data pipelines with observability and MLOps practices for cloud and on-prem environments.\n\nTop Skills: Ci/CdDockerGoHuggingfaceJavaKubernetesLlmsMessage QueuingMlopsModel VersioningNlpPipeline OrchestrationPythonPyTorchRetrieval-Augmented Generation (Rag)RustScikit-LearnSQLStream ProcessingTensorFlow\n\nCompound Eye [...] Senior level\n\nAutomotive • Big Data • Insurance • Software • Transportation\n\nDesign, develop, and deploy machine learning models and pipelines to optimize operations. Lead full ML project lifecycle, ensure model evaluation/monitoring, collaborate cross-functionally, mentor junior engineers, and drive continuous improvement in ML applications and processes.\n\nTop Skills: AirflowAws EcrAws S3Aws SagemakerCi/CdDvcNumpyPandasPythonRestful ApisScikit-LearnSQL\n\nSentiLink [...] Top Skills: AzureBicepC++ContainersData PipelinesDistributed TrainingExperiment TrackingGoGpusIamJetsonKubernetesLinuxMl Ci/CdMlopsModel RegistryNetworkingOnnxOta UpdatesPythonRustTensorrtTerraform\n\nSailPoint\n\n## Staff Machine Learning Engineer\n\nReposted 29 Days AgoSaved\n\nRemote or Hybrid\n\nBoston, MA\n\n149K-252K Annually\n\nSenior level\n\n149K-252K Annually\n\nSenior level\n\nArtificial Intelligence • Cloud • Sales • Security • Software • Cybersecurity • Data Privacy"}, {"url": "https://www.remoterocketship.com/us/jobs/mlops-engineer", "title": "Remote MLOps Engineer Jobs in the US ($128K–$208K)", "content": "Kubernetes\n\nPython\n\nPyTorch\n\n### Senior MLOps Engineer\n\n🕒 July 21\n\n🕒 July 21\n\n#### Zeitview\n\n51 - 200\n\n🏗️ Construction\n\n📦 Logistics\n\n🏥 Healthcare\n\nSenior MLOps Engineer turning models into reliable services for Zeitview, an intelligent aerial imaging company. Working on infrastructure, pipelines, and tooling for production-grade deployments.\n\n🍂 Massachusetts – Remote\n\ninfo\n\ninfo\n\n🍂 Massachusetts – Remote\n\n💵 $170k - $180k / year\n\n💰 $55M Series E on 2023-02\n\n⏰ Full Time\n\n🟠 Senior [...] 🟠 Senior\n\n🤖 Machine Learning Engineer\n\n👻 Ghost score 4%\n\ninfo\n\ninfo\n\nWhat it means: how likely this posting is sitting open without active hiring.How to read it: 60% or higher means we think this is a ghost. Lower scores are less of a worry.How we score it: age, reposts, open roles vs team size, how fast jobs close, and whether pay is listed.Fine print: an estimate from public data, not a judgment of the company. Real jobs can score high, so treat it as a hint, not a fact.\n\nAWS\n\nCloud\n\nDocker [...] ⏰ Full Time\n\n🟠 Senior\n\n🤖 Machine Learning Engineer\n\n👻 Ghost score 4%\n\ninfo\n\ninfo\n\nWhat it means: how likely this posting is sitting open without active hiring.How to read it: 60% or higher means we think this is a ghost. Lower scores are less of a worry.How we score it: age, reposts, open roles vs team size, how fast jobs close, and whether pay is listed.Fine print: an estimate from public data, not a judgment of the company. Real jobs can score high, so treat it as a hint, not a fact."}, {"url": "https://jobs.experian.com/job/machine-learning-engineer-mlops-engineer-remote-in-united-states-jid-2064", "title": "Machine Learning Engineer, MLOps Engineer (Remote) job in UNITED STATES | Experian", "content": "+ Monitor model performance and data drift in production environments, and implement automated retraining and alerting mechanisms\n  + Improve ML workflows using tools such as SageMaker, Airflow, Docker, Kubernetes (EKS), and Step Functions\n  + Ensure compliance with healthcare data standards and security best practices (e.g., HIPAA) [...] You'll have opportunity to:\n  + Develop scalable MLOps pipelines for model training, validation, deployment, and monitoring using AWS services\n  + Implement infrastructure as code and CI/CD workflows to support rapid experimentation and reliable production releases\n  + Collaborate with data scientists to productionize ML models and ensure reproducibility, versioning, and traceability [...] We are looking for an experienced MLOps Engineer to build and scale machine learning solutions that address critical challenges in the healthcare revenue cycle. You will report to Experian Health and focus on operationalizing ML models, ensuring deployment pipelines, and maintaining scalable, secure, and ML infrastructure on AWS, collaborate with data scientists, software engineers, and product teams to bring ML products from prototype to production, with a emphasis on automation, monitoring."}]}
+1. **Title**: Best Machine Learning Jobs in Boston, MA 2026 | Built In Boston
+   **URL**: https://www.builtinboston.com/jobs/ai-machine-learning/search/machine-learning
+   **Content**: Top Skills: Agentic FrameworksAIAutonomous WorkflowsCi/CdData GovernanceDevsecopsDistributed SystemsGitlabLarge Language ModelsMachine LearningMulti-Tenant SystemsObservabilitySecurity And ComplianceSre
+   
+   Samsara
+   
+   ## Senior Machine Learning Engineer
+   
+   17 Days AgoSaved 
+   
+   Easy Apply
+   
+   Remote or Hybrid
+   
+   Boston, MA
+   
+   Easy Apply
+   
+   170K-286K Annually
+   
+   Senior level
+   
+   170K-286K Annually
+   
+   Senior level
+   
+   Artificial Intelligence • Cloud • Computer Vision • Hardware • Internet of Things • Software [...] Top Skills: Agentic AiArtificial IntelligenceComputer VisionInformation RetrievalLarge Language ModelsMachine LearningNatural Language ProcessingPythonRetrieval-Augmented Generation
+   
+   Liftoff
+   
+   ## Machine Learning Engineer
+   
+   9 Days AgoSaved 
+   
+   Easy Apply
+   
+   Remote
+   
+   Boston, MA
+   
+   Easy Apply
+   
+   210K-275K Annually
+   
+   Senior level
+   
+   210K-275K Annually
+   
+   Senior level
+   
+   AdTech • Artificial Intelligence • Big Data • Machine Learning • Marketing Tech • Mobile • Software [...] Leads the AI Engineering team across applied AI features and foundational ML infrastructure. Responsibilities include managing Senior and Staff engineers, hiring and coaching, deploying LLM-powered capabilities, building MLOps and AI observability platforms, balancing product delivery with platform investment, and ensuring privacy, compliance, evaluation rigor, and clinical safety in production systems.
+   
+
+2. **Title**: Remote Mlops Jobs - Apply Now | RemoteLeaf.com
+   **URL**: https://remoteleaf.com/jobs/mlops
+   **Content**: PointClickCare is seeking a Senior Machine Learning Systems Engineer to build and operate the scalable ML platform, infrastructure, and tooling that enables teams to develop, deploy, and monitor AI solutions in healthcare.
+   
+   United States   Full-time   Senior   Machine Learning Engineer 
+   
+   $174k-$218k
+   
+   AWS Azure CI/CD Databricks Docker Java Kubeflow Kubernetes Machine Learning MLflow MLOps Network Security Python
+   
+   4 days, 21 hours ago
+   
+   Apply
+   
+   4 days, 21 hours ago
+   
+   IDT
+   
+   ### Senior Data Engineer
+
+3. **Title**: Remote MLOps Engineer Jobs in the US ($128K–$208K)
+   **URL**: https://www.remoterocketship.com/us/jobs/mlops-engineer
+   **Content**: 🟠 Senior
+   
+   🤖 Machine Learning Engineer
+   
+   👻 Ghost score 5%
+   
+   info
+   
+   info
+   
+   What it means: how likely this posting is sitting open without active hiring.How to read it: 60% or higher means we think this is a ghost. Lower scores are less of a worry.How we score it: age, reposts, open roles vs team size, how fast jobs close, and whether pay is listed.Fine print: an estimate from public data, not a judgment of the company. Real jobs can score high, so treat it as a hint, not a fact.
+   
+   AWS
+   
+   Cloud
+   
+   Docker [...] ⏰ Full Time
+   
+   🟠 Senior
+   
+   🤖 Machine Learning Engineer
+   
+   👻 Ghost score 5%
+   
+   info
+   
+   info
+   
+   What it means: how likely this posting is sitting open without active hiring.How to read it: 60% or higher means we think this is a ghost. Lower scores are less of a worry.How we score it: age, reposts, open roles vs team size, how fast jobs close, and whether pay is listed.Fine print: an estimate from public data, not a judgment of the company. Real jobs can score high, so treat it as a hint, not a fact.
+   
+   AWS [...] info
+   
+   info
+   
+   What it means: how likely this posting is sitting open without active hiring.How to read it: 60% or higher means we think this is a ghost. Lower scores are less of a worry.How we score it: age, reposts, open roles vs team size, how fast jobs close, and whether pay is listed.Fine print: an estimate from public data, not a judgment of the company. Real jobs can score high, so treat it as a hint, not a fact.
+   
+   AWS
+   
+   Azure
+   
+   Docker
+   
+   Kubernetes
+   
+   Python
+   
+   ### Tech Lead – MLOps, Infrastructure
