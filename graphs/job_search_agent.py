@@ -1,22 +1,24 @@
 import asyncio
+from pathlib import Path
 
 from deepagents import FilesystemPermission, create_deep_agent
+from deepagents.backends import CompositeBackend, StateBackend, FilesystemBackend
 from langchain_openai import ChatOpenAI
 
 from config import BaseConfig
 from schemas import JobList
 from tools import internet_search
+from util import run_agent
 
-# 1. Define your models
-
-
-# 2. Automatically generate the schema string to inject into the prompt
+# Automatically generate the schema string to inject into the prompt
 schema_json_example = JobList.model_json_schema()
 
 settings = BaseConfig()
 api_key = settings.OPENAI_API_KEY
 
 model = ChatOpenAI(api_key=api_key, model="gpt-4o-mini")
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+RESEARCH_DIR = PROJECT_ROOT / "research"
 
 JOB_SEARCH_PROMPT = f"""Search and select 5 real postings that match the user's target title, location, and skills.
     
@@ -69,16 +71,15 @@ async def job_search_agent_demo() -> None:
         tools=[internet_search],
         system_prompt=root_instructions,
         subagents=[job_search_agent],
-        model=ChatOpenAI(model="gpt-4o-mini", api_key=BaseConfig().OPENAI_API_KEY)
+        model=ChatOpenAI(model="gpt-4o-mini", api_key=BaseConfig().OPENAI_API_KEY),
+        backend=CompositeBackend(
+            default=StateBackend(),
+            routes={"/research/": FilesystemBackend(root_dir=RESEARCH_DIR, virtual_mode=True),
+                    }),
     )
 
     # Execute the agent asynchronously
-    async for step in agent.astream({"messages": [{"role": "user", "content": initial_message}]}):
-        for node_name, output in step.items():
-            print(f"--- Node: {node_name} ---")
-            if output and isinstance(output, dict) and "messages" in output:
-                for msg in output["messages"]:
-                    msg.pretty_print()
+    await run_agent(agent, initial_message)
 
 
 if __name__ == "__main__":
