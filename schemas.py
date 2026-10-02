@@ -16,3 +16,10 @@ class JobPosting(BaseModel):
 
 class JobList(BaseModel):
     jobs: List[JobPosting]
+
+
+class ChatRequest(BaseModel):
+    message: str
+    thread_id: str
+    user_id: str
+    workspace: str

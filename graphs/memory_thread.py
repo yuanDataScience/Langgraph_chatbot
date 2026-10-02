@@ -1,3 +1,4 @@
+import asyncio
 from pathlib import Path
 
 from deepagents import (create_deep_agent)
@@ -8,7 +9,6 @@ from langgraph.checkpoint.memory import MemorySaver
 from langgraph.store.memory import InMemoryStore
 
 from config import BaseConfig
-import asyncio
 
 settings = BaseConfig()
 api_key = settings.OPENAI_API_KEY
@@ -64,7 +64,6 @@ If the user does not explicitly say "save to memories", do not call
 write_file or edit_file for memory storage.
 Only tell the user that a memories was saved if the write operation succeeds.
 """
-
 
 agent = create_deep_agent(
     tools=[],  # No search tools required for writing cover letters
@@ -125,7 +124,6 @@ async def memory_demo() -> None:
     except Exception as e:
         print(f"Error: {e}")
 
-
     result = await agent.ainvoke(
         {"messages": [{"role": "user", "content": "What is the maximum line length of our code style?"}]},
         config=config_blue,
@@ -138,5 +136,3 @@ async def memory_demo() -> None:
 if __name__ == "__main__":
     # checkpointer_demo_config_blue()
     asyncio.run(memory_demo())
-
-

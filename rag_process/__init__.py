@@ -1,2 +1,0 @@
-from rag_process.extractor import pdf_text_extractor
-from rag_process.service import vector_service

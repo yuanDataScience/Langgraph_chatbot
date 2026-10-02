@@ -43,3 +43,74 @@ if prompt := st.chat_input("Write your prompt in this input field"):
 
     with st.chat_message("assistant"):
         st.markdown(answer)
+
+# new code
+import uuid
+import httpx
+import streamlit as st
+
+
+API_URL = "http://localhost:8000"
+
+
+if "thread_id" not in st.session_state:
+    st.session_state.thread_id = str(uuid.uuid4())
+
+if "user_id" not in st.session_state:
+    st.session_state.user_id = "alice"
+
+if "workspace" not in st.session_state:
+    st.session_state.workspace = "acme-project"
+
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
+
+if st.button("New conversation"):
+    st.session_state.thread_id = str(uuid.uuid4())
+    st.session_state.messages = []
+    st.rerun()
+
+prompt = st.chat_input("Ask something")
+
+if prompt:
+    st.session_state.messages.append(
+        {
+            "role": "user",
+            "content": prompt,
+        }
+    )
+
+    with st.chat_message("user"):
+        st.markdown(prompt)
+
+    payload = {
+        "message": prompt,
+        "thread_id": st.session_state.thread_id,
+        "user_id": st.session_state.user_id,
+        "workspace": st.session_state.workspace,
+    }
+
+    with st.spinner("Thinking..."):
+        response = httpx.post(
+            f"{API_URL}/chat",
+            json=payload,
+            timeout=120,
+        )
+
+    response.raise_for_status()
+    answer = response.json()["message"]
+
+    st.session_state.messages.append(
+        {
+            "role": "assistant",
+            "content": answer,
+        }
+    )
+
+    with st.chat_message("assistant"):
+        st.markdown(answer)

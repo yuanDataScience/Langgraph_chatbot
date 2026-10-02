@@ -4,9 +4,8 @@ from pathlib import Path
 from deepagents import (FilesystemPermission, create_deep_agent)
 from deepagents.backends import CompositeBackend, StateBackend, FilesystemBackend
 from langchain_openai import ChatOpenAI
-from langgraph.store.memory import InMemoryStore
 from langgraph.checkpoint.memory import MemorySaver
-
+from langgraph.store.memory import InMemoryStore
 
 from config import BaseConfig
 from cover_letter_agent import cover_letter_agent

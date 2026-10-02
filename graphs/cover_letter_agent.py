@@ -2,11 +2,11 @@ import asyncio
 from pathlib import Path
 
 from deepagents import FilesystemPermission, create_deep_agent
-from langchain_openai import ChatOpenAI
-from util import resume_str, run_agent
 from deepagents.backends import CompositeBackend, StateBackend, FilesystemBackend
+from langchain_openai import ChatOpenAI
 
 from config import BaseConfig
+from util import resume_str, run_agent
 
 settings = BaseConfig()
 api_key = settings.OPENAI_API_KEY
