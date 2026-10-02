@@ -19,7 +19,7 @@ from langgraph.checkpoint.memory import MemorySaver
 from langgraph.store.memory import InMemoryStore
 
 from config import BaseConfig
-from rag_process import pdf_text_extractor, vector_service
+from file_process import pdf_text_extractor
 from schemas import ChatRequest
 from upload import save_file
 from graphs.cover_letter_agent import cover_letter_agent
@@ -164,10 +164,6 @@ async def file_upload_controller(
     try:
         filepath = await save_file(file)
         bg_text_processor.add_task(pdf_text_extractor, filepath)
-        bg_text_processor.add_task(
-            vector_service.store_file_content_in_db,
-            filepath.replace("pdf", "txt")
-        )
     except Exception as e:
         raise HTTPException(
             detail=f"An error occurred while saving file - Error: {e}",
